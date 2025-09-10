@@ -1,0 +1,5 @@
+-- CreateTable
+CREATE TABLE "Adr" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "title" TEXT NOT NULL
+);

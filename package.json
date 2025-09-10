@@ -1,0 +1,74 @@
+{
+  "name": "noteadr",
+  "displayName": "noteADR",
+  "description": "",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.103.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "noteadr.iniciarNoteAdr",
+        "name": "NoteADR",
+        "title": "Iniciar noteADR"
+      },
+      {
+        "command": "noteadr.abrirMainView",
+        "name": "NoteADR",
+        "title": "Abrir noteADR"
+      }
+    ]
+  },
+  "configuration": {
+    "title": "noteADR",
+    "properties": {
+      "noteadr.adrDiretorio": {
+        "type": "string",
+        "default": "docs/adr",
+        "description": "Diretório onde os arquivos da extensão serão salvos."
+      },
+      "noteadr.templateDiretorio": {
+        "type": "string",
+        "default": "docs/templates",
+        "description": "Diretório onde os templates serão salvos."
+      },
+      "noteadr.databasePath": {
+        "type": "string",
+        "default": "docs",
+        "description": "Caminho do arquivo do banco de dados SQLite."
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src",
+    "test": "vscode-test",
+    "prisma:generate": "prisma generate",
+    "prisma:db:push": "prisma db push",
+    "postinstall": "prisma generate"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.10",
+    "@types/node": "20.x",
+    "@types/vscode": "^1.103.0",
+    "@typescript-eslint/eslint-plugin": "^8.28.0",
+    "@typescript-eslint/parser": "^8.28.0",
+    "@vscode/test-cli": "^0.0.10",
+    "@vscode/test-electron": "^2.4.1",
+    "eslint": "^9.23.0",
+    "prisma": "^6.15.0",
+    "typescript": "^5.8.2"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.15.0"
+  }
+}

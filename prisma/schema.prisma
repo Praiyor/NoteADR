@@ -1,0 +1,48 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model adr {
+  id         Int         @id
+  nome       String
+  categorias categoria[] @relation("ADR_categorias")
+  templateId Int
+  template   template    @relation(fields: [templateId], references: [id])
+}
+
+model template {
+  id      Int    @id @default(autoincrement())
+  nome    String
+  fieldId Int    @unique
+  field   field  @relation(fields: [fieldId], references: [id])
+
+  adrs adr[]
+}
+
+model field {
+  id       Int       @id @default(autoincrement())
+  campos   Json
+  ruleId   Int       @unique
+  rule     rule      @relation(fields: [ruleId], references: [id])
+  template template?
+}
+
+model rule {
+  id     Int    @id @default(autoincrement())
+  regras Json
+  field  field?
+}
+
+model categoria {
+  id   Int    @id @default(autoincrement())
+  nome String
+  adrs adr[]  @relation("ADR_categorias")
+}
