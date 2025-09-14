@@ -22,6 +22,11 @@
         "command": "noteadr.abrirMainView",
         "name": "NoteADR",
         "title": "Abrir noteADR"
+      },
+      {
+        "command": "noteadr.abrirCriarADRView",
+        "name": "NoteADR",
+        "title": "Criar novo ADR"
       }
     ]
   },

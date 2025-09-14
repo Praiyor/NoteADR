@@ -1,8 +1,7 @@
 
 import * as vscode from 'vscode';
 import { inicializarNodeAdr } from './services/inicializarservice';
-import { registerMainView } from './views/MainView';
-import { registerCreateAdrView } from './views/CreateADR';
+import { AppView } from './views/AppView';
 
 
 export function activate(context: vscode.ExtensionContext) {
@@ -19,8 +18,21 @@ export function activate(context: vscode.ExtensionContext) {
 		})
 	);
 
-	registerMainView(context);
-	registerCreateAdrView(context);
+	context.subscriptions.push(
+		vscode.commands.registerCommand('noteadr.abrirMainView', () => {
+			AppView.getInstance(context.extensionUri, "main");
+		})
+	);
+
+	context.subscriptions.push(
+		vscode.commands.registerCommand('noteadr.abrirCriarADRView', (view?: string) =>{
+			if(!view){
+				AppView.getInstance(context.extensionUri, "createADR");
+			}else {
+				AppView.getInstance(context.extensionUri, view);
+			}
+		})
+	);
 
 }
 

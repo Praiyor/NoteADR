@@ -11,14 +11,14 @@
 
     function searchBtnClicked() {
         vscode.postMessage({
-            type: 'search-adr',
+            command: 'search-adr',
             value: searchInput.value
         });
     }
 
     function createAdrBtnClicked() {
         vscode.postMessage({
-            type: 'create-adr',
+            command: 'create-adr',
         });
     }
 

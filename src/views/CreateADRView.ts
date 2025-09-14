@@ -2,13 +2,12 @@ import * as vscode from 'vscode';
 import { getNonce } from '../utils';
 
 
-
-export class MainView {
+export class CreateADR {
 
     public static getHtml(webview: vscode.Webview, extensionUri: vscode.Uri){
         const styleResetUri = webview.asWebviewUri(vscode.Uri.joinPath(extensionUri, 'media', 'css' , 'reset.css'));
-        const styleMainViewUri = webview.asWebviewUri(vscode.Uri.joinPath(extensionUri, 'media', 'css', 'mainView.css'));
-        const scriptMainViewUri = webview.asWebviewUri(vscode.Uri.joinPath(extensionUri, 'media', 'js', 'mainView.js'));
+        const styleMainViewUri = webview.asWebviewUri(vscode.Uri.joinPath(extensionUri, 'media', 'css', 'createAdrView.css'));
+        const scriptMainViewUri = webview.asWebviewUri(vscode.Uri.joinPath(extensionUri, 'media', 'js', 'createAdrView.js'));
 
         const nonce = getNonce();
 
@@ -25,14 +24,10 @@ export class MainView {
                 <title>Note ADR Main View</title>
             </head>
             <body>
-                <div class="search-container">
-                    <input type="text" id="adr-search" placeholder="Pesquisar ADR..." />
-                    <button id="btn-search">Pesquisar</button>
-                    <button id="btn-new-adr">Novo ADR</button>
-                </div>
-
-                <div id="adr-list" class="adr-list">
-                    <!-- Lista de ADRs será populada aqui via JS -->
+                <div class="form-container">
+                    <input type="text" id="titulo-adr" placeholder="Titulo" />
+                    <select id="template-adr"></select>
+                    <button id="btn-create-adr">Criar ADR</button>
                 </div>
 
                 <script nonce="${nonce}" src="${scriptMainViewUri}"></script>
