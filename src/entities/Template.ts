@@ -1,4 +1,4 @@
-import { adr } from "./Adr";
+import { Adr } from "./Adr";
 import { Field } from "./Field";
 
 export class Template {
@@ -6,23 +6,43 @@ export class Template {
         private id: number,
         private nome: string,
         private field: Field,
-        private adrs: adr[] = []
+        private adrs: Adr[] = []
     ) {}
 
     public getId(): number {
         return this.id;
     }
 
+    public setId(id: number): void {
+        this.id = id;
+    }
+
     public getNome(): string {
         return this.nome;
+    }
+
+    public setNome(nome: string): void {
+        this.nome = nome;
     }
 
     public getField(): Field {
         return this.field;
     }
 
-    public getAdrs(): adr[] {
+    public setField(field: Field): void {
+        this.field = field;
+    }
+
+    public getAdrs(): Adr[] {
         return this.adrs;
+    }
+
+    public setAdrs(adrs: Adr[]): void {
+        this.adrs = adrs;
+    }
+
+    public addAdr(adrItem: Adr): void {
+        this.adrs.push(adrItem);
     }
 
     public validateTemplate(): boolean {

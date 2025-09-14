@@ -13,15 +13,31 @@ export class Field {
         return this.id;
     }
 
+    public setId(id: number): void {
+        this.id = id;
+    }
+
     public getCampos(): Record<string, any> {
         return this.campos;
+    }
+
+    public setCampos(campos: Record<string, any>): void {
+        this.campos = campos;
     }
 
     public getRule(): Rule {
         return this.rule;
     }
 
+    public setRule(rule: Rule): void {
+        this.rule = rule;
+    }
+
     public getTemplate(): Template | undefined {
         return this.template;
+    }
+
+    public setTemplate(template: Template | undefined): void {
+        this.template = template;
     }
 }

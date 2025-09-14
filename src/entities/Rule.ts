@@ -11,11 +11,24 @@ export class Rule {
         return this.id;
     }
 
+    public setId(id: number): void {
+        this.id = id;
+    }
+
+
     public getRegras(): Record<string, any> {
         return this.regras;
     }
 
+    public setRegras(regras: Record<string, any>): void {
+        this.regras = regras;
+    }
+
     public getField(): Field | undefined {
         return this.field;
+    }
+
+    public setField(field: Field | undefined): void {
+        this.field = field;
     }
 }
