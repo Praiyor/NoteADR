@@ -1,0 +1,79 @@
+:root {
+	--container-padding: 20px;
+	--input-padding-vertical: 6px;
+	--input-padding-horizontal: 8px;
+}
+
+body {
+	padding: var(--container-padding);
+	color: var(--vscode-foreground);
+	font-size: var(--vscode-font-size);
+	font-weight: var(--vscode-font-weight);
+	font-family: var(--vscode-font-family);
+	background-color: var(--vscode-editor-background);
+}
+
+*:focus {
+	outline-color: var(--vscode-focusBorder) !important;
+}
+
+.form-container {
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+}
+
+.adr-selected {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 12px;
+}
+
+.adr-selected label {
+	font-weight: 500;
+}
+
+.adr-info-box {
+	flex: 1;
+	padding: 8px 12px;
+	border: 1px solid var(--vscode-editorWidget-border);
+	border-radius: 6px;
+	background-color: var(--vscode-editor-background);
+	white-space: pre-wrap;
+}
+
+#novo-adr {
+	width: 100%;
+	padding: var(--input-padding-vertical) var(--input-padding-horizontal);
+	color: var(--vscode-input-foreground);
+	background-color: var(--vscode-input-background);
+	border: 1px solid var(--vscode-input-border);
+	border-radius: 4px;
+	margin-top: 12px;
+}
+
+button {
+	border: none;
+	padding: 8px 16px;
+	cursor: pointer;
+	color: var(--vscode-button-foreground);
+	background: var(--vscode-button-background);
+	border-radius: 4px;
+	align-self: center;
+}
+
+button:hover {
+	background: var(--vscode-button-hoverBackground);
+}
+
+.button-group {
+	display: flex;
+	justify-content: center; 
+	gap: 12px; 
+}
+
+.button-group button {
+	flex: 1; 
+	max-width: 150px; 
+}

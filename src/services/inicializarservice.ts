@@ -1,22 +1,23 @@
 import * as vscode from 'vscode';
-import { getWorkspaceRootPath } from '../utils';
+import { getWorkspaceRootPath } from '../Utils/utils';
 import { Database } from '../repository/Database';
 
 
-export async function inicializarNodeAdr(): Promise<void>{
+export async function inicializarNodeAdr(context: vscode.ExtensionContext): Promise<void>{
     const root = getWorkspaceRootPath();
 
     if(!root){
         return;
     }
 
-    const adrDiretorio = vscode.Uri.joinPath(root.uri, getAdrDiretorio()) ;
+    const adrDiretorio = vscode.Uri.joinPath(root.uri, getAdrDiretorio());
     const templateDiretorio = vscode.Uri.joinPath(root.uri, getTemplateDiretorio());
 
     if(!await existeDiretorio(adrDiretorio)){
         console.log("Não existe ainda");
         await criarDiretorio(adrDiretorio);
         await criarDiretorio(templateDiretorio);
+        await createTemplate(context, templateDiretorio);
     }else{
         console.log("Já existe");
     }
@@ -33,15 +34,24 @@ export async function inicializarNodeAdr(): Promise<void>{
     console.log(`noteADR iniciado!`);
 }
 
-function getAdrDiretorio(): string {
+async function createTemplate(context: vscode.ExtensionContext, uri:vscode.Uri){
+    const templatePath = vscode.Uri.joinPath(vscode.Uri.file(context.extensionPath), "resources", "template.md");
+    const template = await vscode.workspace.fs.readFile(templatePath);
+
+    const destination = vscode.Uri.joinPath(uri, "decision-record.md");
+
+    await vscode.workspace.fs.writeFile(destination, template);
+}
+
+export function getAdrDiretorio(): string {
     return vscode.workspace.getConfiguration().get('noteadr.adrDiretorio') ?? 'docs/adr';
 }
 
-function getTemplateDiretorio(): string {
+export function getTemplateDiretorio(): string {
     return vscode.workspace.getConfiguration().get('noteadr.templateDiretorio') ?? 'docs/templates';
 }
 
-async function existeDiretorio(uri:vscode.Uri): Promise<boolean> {
+export async function existeDiretorio(uri:vscode.Uri): Promise<boolean> {
     try {
         const stat = await vscode.workspace.fs.stat(uri);
 
@@ -51,7 +61,7 @@ async function existeDiretorio(uri:vscode.Uri): Promise<boolean> {
     }
 }
 
-async function existeArquivo(uri:vscode.Uri): Promise<boolean> {
+export async function existeArquivo(uri:vscode.Uri): Promise<boolean> {
     try {
     const stat = await vscode.workspace.fs.stat(uri);
     

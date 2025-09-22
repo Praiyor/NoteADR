@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { getNonce } from '../utils';
+import { getNonce } from '../Utils/utils';
 
 
 export class CreateADR {
@@ -27,7 +27,10 @@ export class CreateADR {
                 <div class="form-container">
                     <input type="text" id="titulo-adr" placeholder="Titulo" />
                     <select id="template-adr"></select>
-                    <button id="btn-create-adr">Criar ADR</button>
+                    <div class="button-group">
+                        <button id="btn-back" class="back-button">Voltar</button>
+                        <button id="btn-create-adr">Criar ADR</button>
+                    </div>
                 </div>
 
                 <script nonce="${nonce}" src="${scriptMainViewUri}"></script>

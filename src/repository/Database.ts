@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import { PrismaClient } from "@prisma/client";
-import { getWorkspaceRootPath } from "../utils";
+import { getWorkspaceRootPath } from "../Utils/utils";
 import path from "path";
 import { exec as execCb } from "child_process";
 import { promisify } from "util";
@@ -52,58 +52,41 @@ export class Database {
   }
 
   private async seedDatabase() {
-    // 🔹 Cria uma Rule
-    const rule = await this.prisma.rule.create({
-      data: { regras: { min: 1, max: 10 } }
-    });
-    console.log("Rule criada:", rule);
+    const campos = ["Title", "Status", "Context", "Decision", "Consequences"];
 
-    // 🔹 Cria um Field associado
+    const regras = [
+      { min: 1, max: 100 },
+      { enum: ["proposed", "accepted", "rejected", "deprecated", "superseded"] },
+      { min: 1, max: 5000 }, 
+      { min: 1, max: 5000 }, 
+      { min: 1, max: 5000 } 
+    ];
+      const rule = await this.prisma.rule.create({
+        data: { regras }
+      });
+
     const field = await this.prisma.field.create({
       data: {
-        campos: { tipo: "string" },
+        campos,
         ruleId: rule.id
       }
     });
-    console.log("Field criado:", field);
 
-    // 🔹 Cria Template com Field
-    const template = await this.prisma.template.create({
+    await this.prisma.template.create({
       data: {
-        nome: "Template de Teste",
+        nome: "decision-record",
         fieldId: field.id
       }
     });
-    console.log("Template criado:", template);
 
-    // 🔹 Cria Categoria
-    const categoria = await this.prisma.categoria.create({
-      data: { nome: "Performance" }
-    });
-    console.log("Categoria criada:", categoria);
+    const categorias = ["Performance", "Segurança", "Usabilidade", "Escalabilidade", "Manutenibilidade"];
+    const categoriaCriadas = [];
 
-    // 🔹 Cria ADR com Template e Categoria
-    const adr = await this.prisma.adr.create({
-      data: {
-        id: 1,
-        nome: "Decisão de Arquitetura",
-        templateId: template.id,
-        categorias: {
-          connect: { id: categoria.id }
-        }
-      },
-      include: {
-        template: true,
-        categorias: true
-      }
-    });
-    console.log("ADR criado:", adr);
+    for (const nome of categorias) {
+      const cat = await this.prisma.categoria.create({ data: { nome } });
+      categoriaCriadas.push(cat);
+    }
 
-    // 🔹 Lista pra conferir
-    const adrs = await this.prisma.adr.findMany({
-      include: { template: true, categorias: true }
-    });
-    console.log("\n📋 ADRs no banco:", JSON.stringify(adrs, null, 2));
   }
 
   public getDatabaseConfig(): string {

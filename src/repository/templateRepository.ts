@@ -7,8 +7,8 @@ type TemplateDTO = {
     fieldId: number
 }
 
-type templateWithRelations = Prisma.templateGetPayload<{
-    include: {field: true}
+export type templateWithRelations = Prisma.templateGetPayload<{
+    include: {field: {include: { rule: true } } }
 }>
 
 export class templateRepository {
@@ -23,7 +23,7 @@ export class templateRepository {
     async findAll(): Promise<templateWithRelations[]>{
         return await this.prisma.template.findMany({
             include: {
-                field: true
+                field: {include: { rule: true } }
             }
         });
     }
@@ -34,7 +34,7 @@ export class templateRepository {
                 id: templateId
             },
             include: {
-                field: true
+                field: { include: { rule: true } }
             }
         });
     }

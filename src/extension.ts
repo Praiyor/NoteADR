@@ -1,7 +1,7 @@
 
 import * as vscode from 'vscode';
 import { AppView } from './views/AppView';
-import { inicializarNodeAdr } from './services/inicializarservice';
+import { inicializarNodeAdr } from './services/inicializarService';
 
 
 export function activate(context: vscode.ExtensionContext) {
@@ -13,7 +13,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 			vscode.window.showInformationMessage('noteADR iniciado!');
 
-			inicializarNodeAdr();
+			inicializarNodeAdr(context);
 
 		})
 	);
@@ -32,6 +32,18 @@ export function activate(context: vscode.ExtensionContext) {
 				AppView.getInstance(context.extensionUri, view);
 			}
 		})
+	);
+
+	context.subscriptions.push(
+	  	vscode.commands.registerCommand('noteadr.substituirADR', (adrId: number) => {
+	  	  	AppView.getInstance(context.extensionUri, "substituirADR", { adrId });
+	  	})
+	);
+
+	context.subscriptions.push(
+	  	vscode.commands.registerCommand('noteadr.categoriaADR', (adrId: number) => {
+	  	  	AppView.getInstance(context.extensionUri, "categoriaAdr", { adrId });
+	  	})
 	);
 
 }

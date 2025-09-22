@@ -4,14 +4,19 @@
     const btnNewAdr = document.querySelector('#btn-create-adr');
     const inputTitulo = document.querySelector('#titulo-adr');
     const selectTemplate = document.querySelector('#template-adr');
+    const btnBack = document.getElementById("btn-back");
 
     btnNewAdr.addEventListener('click', createAdrBtnClicked);
 
+    btnBack.addEventListener("click", () => {
+        vscode.postMessage({ command: "main-view" });
+    });
+
     function createAdrBtnClicked() {
         vscode.postMessage({
-            type: 'new-adr',
+            command: 'new-adr',
             titulo: inputTitulo.value,
-            template: selectTemplate.value
+            templateId: selectTemplate.value
         });
     }
 
@@ -19,7 +24,7 @@
         const message = event.data;
         switch (message.type) {
             case "load-templates":
-                renderTemplates(message.data);
+                renderTemplates(JSON.parse(message.data));
                 break;
         }
     });
@@ -34,12 +39,19 @@
             return;
         }
 
-        templates.forEach(t => {
+        templates.forEach(template => {
             const opt = document.createElement("option");
-            opt.value = t.id;
-            opt.textContent = t.name;
+            opt.value = template.id;
+            opt.textContent = `${template.id} - ${template.nome}`;
             selectTemplate.appendChild(opt);
         });
     }
+
+    function getTemplates(){
+        vscode.postMessage({
+            command: 'load-templates',
+        });
+    }
+    getTemplates();
 
 }());

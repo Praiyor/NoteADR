@@ -7,9 +7,14 @@ type adrDTO = {
     templateId: number
 }
 
-type adrWithRelations = Prisma.adrGetPayload<{
-    include: {template: true, categorias: true}
-}>
+export type adrWithRelations = Prisma.adrGetPayload<{
+  include: {
+    template: {
+      include: { field: { include: { rule: true } } };
+    };
+    categorias: true;
+  };
+}>;
 
 export class adrRepository {
     private prisma = Database.getInstance().getPrismaClient();
@@ -31,7 +36,11 @@ export class adrRepository {
     async findAll(): Promise<adrWithRelations[]>{
         return await this.prisma.adr.findMany({
             include: {
-                template: true,
+                template: {
+                    include: {
+                        field: { include: { rule: true } }
+                    }
+                },
                 categorias: true
             }
         });
@@ -43,7 +52,7 @@ export class adrRepository {
                 id: adrId
             },
             include:{
-                template: true,
+                template: { include: { field: { include: { rule: true } } } },
                 categorias: true
             }
         });
@@ -61,7 +70,7 @@ export class adrRepository {
         }
     }
 
-    async updateById(adrId: number, adrData: Partial<adrDTO>): Promise<adr | null>{
+    async updateById(adrId: number, adrData: Partial<adrDTO>): Promise<adr>{
         try {
             return await this.prisma.adr.update({
                 where:{
@@ -72,5 +81,23 @@ export class adrRepository {
         } catch (error) {
             throw new Error(`Erro atualizando adr with id ${adrId}: ${String(error)}`);
         }
+    }
+
+    async removeCategoriaFromAdr(adrId: number, categoriaId: number) {
+        return await this.prisma.adr.update({
+            where: { id: adrId },
+            data: {
+                categorias: { disconnect: { id: categoriaId } }
+            }
+        });
+    }
+    
+    async addCategoriaToAdr(adrId: number, categoriaId: number) {
+        return await this.prisma.adr.update({
+            where: { id: adrId },
+            data: {
+                categorias: { connect: { id: categoriaId } }
+            }
+        });
     }
 }

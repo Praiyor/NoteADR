@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { getNonce } from '../utils';
+import { getNonce } from '../Utils/utils';
 
 
 
@@ -27,12 +27,11 @@ export class MainView {
             <body>
                 <div class="search-container">
                     <input type="text" id="adr-search" placeholder="Pesquisar ADR..." />
-                    <button id="btn-search">Pesquisar</button>
                     <button id="btn-new-adr">Novo ADR</button>
                 </div>
 
                 <div id="adr-list" class="adr-list">
-                    <!-- Lista de ADRs será populada aqui via JS -->
+                    
                 </div>
 
                 <script nonce="${nonce}" src="${scriptMainViewUri}"></script>

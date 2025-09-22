@@ -2,8 +2,6 @@
     --container-padding: 20px;
     --input-padding-vertical: 6px;
     --input-padding-horizontal: 8px;
-    --input-margin-vertical: 4px;
-    --input-margin-horizontal: 0;
 }
 
 body {
@@ -29,11 +27,10 @@ body {
 .form-container input,
 .form-container select {
     width: 100%;
-    border: none;
     padding: var(--input-padding-vertical) var(--input-padding-horizontal);
     color: var(--vscode-input-foreground);
     background-color: var(--vscode-input-background);
-    outline: 1px solid var(--vscode-input-border);
+    border: 1px solid var(--vscode-input-border);
     box-sizing: border-box;
     font-size: inherit;
 }
@@ -63,4 +60,15 @@ body {
 
 #btn-create-adr.secondary:hover {
     background: var(--vscode-button-secondaryHoverBackground);
+}
+
+.button-group {
+    display: flex;
+    justify-content: center; 
+    gap: 12px; 
+}
+
+.button-group button {
+    flex: 1; 
+    max-width: 150px; 
 }
