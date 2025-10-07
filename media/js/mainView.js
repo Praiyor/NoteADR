@@ -32,13 +32,20 @@
             return;
         }
     
-        adrs.forEach(adr => {
+        const adrMap = new Map();
+        adrs.forEach(a => adrMap.set(a.id, a));
+    
+        const renderItem = (adr, isChild = false) => {
             const item = document.createElement('div');
-            item.className = "adr-item";
+            item.className = isChild ? "adr-item adr-child" : "adr-item";
         
             const info = document.createElement('div');
             info.className = "adr-info";
             info.textContent = `${adr.id} - ${adr.nome}`;
+            
+            if (adr.substituido) {
+                info.innerHTML = `<span class="adr-substituido">${adr.id} - ${adr.nome} (Substituído)</span>`;
+            }
         
             const actions = document.createElement('div');
             actions.className = "adr-actions";
@@ -52,72 +59,77 @@
                 });
             });
         
-            const menuBtn = document.createElement('button');
-            menuBtn.className = "menu-button";
-            menuBtn.innerHTML = "⋮";
-        
-            const dropdown = document.createElement('div');
-            dropdown.className = "dropdown";
-        
-            const alterBtn = document.createElement('button');
-            alterBtn.textContent = "Alterar ADR";
-            alterBtn.addEventListener("click", () => {
-                vscode.postMessage({
-                    command: 'alter-adr',
-                    value: adr.id
-                });
-            });
-        
-            const categoriesBtn = document.createElement('button');
-            categoriesBtn.textContent = "Categorias";
-            categoriesBtn.addEventListener("click", () => {
-                vscode.postMessage({
-                    command: 'categorias-adr',
-                    value: adr.id
-                });
-            });
-        
-            const replaceBtn = document.createElement('button');
-            replaceBtn.textContent = "Substituir ADR";
-            replaceBtn.addEventListener("click", () => {
-                vscode.postMessage({
-                    command: 'replace-adr',
-                    value: adr.id
-                });
-            });
-        
-            const viewReplacementsBtn = document.createElement('button');
-            viewReplacementsBtn.textContent = "Visualizar ADRs Substituto";
-            viewReplacementsBtn.addEventListener("click", () => {
-                vscode.postMessage({
-                    command: 'view-replacements',
-                    value: adr.id
-                });
-            });
-        
-            menuBtn.addEventListener("click", (e) => {
-                e.stopPropagation(); 
-                dropdown.classList.toggle("show");
-            });
-        
-            document.addEventListener("click", () => {
-                dropdown.classList.remove("show");
-            });
-        
-            dropdown.appendChild(alterBtn);
-            dropdown.appendChild(categoriesBtn);
-            dropdown.appendChild(replaceBtn);
-            dropdown.appendChild(viewReplacementsBtn);
-        
             actions.appendChild(viewBtn);
-            actions.appendChild(menuBtn);
+        
+            if (!isChild) {
+                const menuBtn = document.createElement('button');
+                menuBtn.className = "menu-button";
+                menuBtn.innerHTML = "⋮";
+            
+                const dropdown = document.createElement('div');
+                dropdown.className = "dropdown";
+            
+                const alterBtn = document.createElement('button');
+                alterBtn.textContent = "Alterar ADR";
+                alterBtn.addEventListener("click", () => {
+                    vscode.postMessage({
+                        command: 'alter-adr',
+                        value: adr.id
+                    });
+                });
+            
+                const categoriesBtn = document.createElement('button');
+                categoriesBtn.textContent = "Categorias";
+                categoriesBtn.addEventListener("click", () => {
+                    vscode.postMessage({
+                        command: 'categorias-adr',
+                        value: adr.id
+                    });
+                });
+            
+                const replaceBtn = document.createElement('button');
+                replaceBtn.textContent = "Substituir ADR";
+                replaceBtn.addEventListener("click", () => {
+                    vscode.postMessage({
+                        command: 'replace-adr',
+                        value: adr.id
+                    });
+                });
+            
+                dropdown.appendChild(alterBtn);
+                dropdown.appendChild(categoriesBtn);
+                dropdown.appendChild(replaceBtn);
+            
+                menuBtn.addEventListener("click", (e) => {
+                    e.stopPropagation();
+                    dropdown.classList.toggle("show");
+                });
+            
+                document.addEventListener("click", () => {
+                    dropdown.classList.remove("show");
+                });
+            
+                actions.appendChild(menuBtn);
+                item.appendChild(dropdown);
+            }
+        
             item.appendChild(info);
             item.appendChild(actions);
-            item.appendChild(dropdown);
         
             adrList.appendChild(item);
+        };
+    
+        adrs.forEach(adr => {
+            renderItem(adr);
+        
+            if (adr.substituido && adr.substituidoPor) {
+                const substituto = adrMap.get(adr.substituidoPor);
+                if (substituto) {
+                    renderItem(substituto, true);
+                }
+            }
         });
-    }
+}
 
     searchInput.addEventListener("input", () => {
         const query = searchInput.value.toLowerCase();

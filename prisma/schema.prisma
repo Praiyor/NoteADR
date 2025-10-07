@@ -11,11 +11,13 @@ datasource db {
 }
 
 model adr {
-  id         Int         @id
-  nome       String
-  categorias categoria[] @relation("ADR_categorias")
-  templateId Int
-  template   template    @relation(fields: [templateId], references: [id])
+  id             Int         @id
+  nome           String
+  categorias     categoria[] @relation("ADR_categorias")
+  templateId     Int
+  template       template    @relation(fields: [templateId], references: [id])
+  substituido    Boolean     @default(false)
+  substituidoPor Int?
 }
 
 model template {

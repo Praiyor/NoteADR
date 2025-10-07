@@ -28,6 +28,25 @@ export async function getAdrById(adrId: number): Promise<Adr | undefined>{
     return categoria;
 }
 
+export async function SubstiteADR(adrId: number, adrSubstitutoId: number){
+    const repository = await getAdrRepository();
+    const adrExiste = await repository.findById(adrId);
+    if(!adrExiste){
+        vscode.window.showErrorMessage(`ADR com id ${adrId} não foi encontrado`);
+        return;
+    }
+    try {
+        await repository.updateById(adrId, { substituido: true, substituidoPor: adrSubstitutoId});
+
+        vscode.window.showInformationMessage(`ADR ${adrExiste.nome} substituído com sucesso.`);
+
+        return true;
+    } catch (error) {
+        vscode.window.showErrorMessage(`Erro ao substituir ADR: ${adrExiste.nome}`);
+    }
+    
+}
+
 export async function createADR(titulo: string, templateId: number) {
     const root = getWorkspaceRootPath();
     if (!root) {
@@ -87,6 +106,8 @@ async function loadTemplate(templateId: number, rootUri: vscode.Uri): Promise<st
     const templateFile = vscode.Uri.joinPath(templateFolder, `${template.nome}.md`);
     
     const templateContent = await readMarkdownFile(templateFile, `Arquivo de template ${template.nome}.md não encontrado.`);
+    
+    return templateContent;
 }
 
 function generateAdrContent(templateContent: string, titulo: string): string {

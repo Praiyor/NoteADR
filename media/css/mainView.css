@@ -135,3 +135,13 @@ button.secondary:hover {
 .dropdown button:hover {
 	background: var(--vscode-list-hoverBackground);
 }
+
+.adr-substituido {
+	text-decoration: line-through;
+	opacity: 0.7;
+}
+
+.adr-child {
+	margin-left: 30px;
+	background-color: rgba(255, 255, 255, 0.03);
+}

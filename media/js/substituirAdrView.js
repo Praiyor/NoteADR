@@ -25,12 +25,17 @@
 
                 const selectedAdr = adrs.find((a) => a.id === selectedId);
                 if (selectedAdr) {
-                    adrInfoDiv.textContent = `#${selectedAdr.id} - ${selectedAdr.nome}`;
+                    let text = `#${selectedAdr.id} - ${selectedAdr.nome}`;
+                    if(selectedAdr.substituido){
+                        text += " (Substituido)";
+                    }
+
+                    adrInfoDiv.textContent = text;
                 }
 
                 novoAdrSelect.innerHTML = "";
                 adrs
-                    .filter((a) => a.id !== selectedId)
+                    .filter((a) => a.id !== selectedId && !a.substituido)
                     .forEach((adr) => {
                         const option = document.createElement("option");
                         option.value = adr.id;
@@ -47,9 +52,9 @@
         const newAdrId = parseInt(novoAdrSelect.value, 10);
 
         vscode.postMessage({
-            command: "replace-adr",
+            command: "substite-adr",
             selectedAdr: selectedAdrId,
-            newAdr: newAdrId,
+            substituteAdr: newAdrId,
         });
     });
 })();

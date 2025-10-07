@@ -1,6 +1,6 @@
-# nodeadr README
+# noteadr README
 
-This is the README for your extension "nodeadr". After writing up a brief description, we recommend including the following sections.
+This is the README for your extension "noteadr". After writing up a brief description, we recommend including the following sections.
 
 ## Features
 

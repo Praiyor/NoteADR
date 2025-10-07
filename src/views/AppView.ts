@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { MainView } from './MainView';
 import { CreateADR } from './CreateADRView';
-import { createADR, getAdrById, getAdrFileUri, getAdrs } from '../services/adrService';
+import { createADR, getAdrById, getAdrFileUri, getAdrs, SubstiteADR } from '../services/adrService';
 import { safeStringify } from '../Utils/utils';
 import { SubstituirADR } from './SubstituirView';
 import { getTemplates } from '../services/templateService';
@@ -190,6 +190,17 @@ export class AppView {
                         const fileUri = await getAdrFileUri(adrId);
                         
                         await vscode.commands.executeCommand("markdown.showPreviewToSide", fileUri);
+
+                        break;
+                    }
+
+                    case 'substite-adr': {
+                        const adrId = data.selectedAdr;
+                        const substituteAdrId = data.substituteAdr;
+                        const result = await SubstiteADR(adrId, substituteAdrId);
+                        if(result){
+                            vscode.commands.executeCommand('noteadr.abrirMainView');
+                        }
 
                         break;
                     }

@@ -6,7 +6,9 @@ export class Adr{
         private id: number,
         private nome: string,
         private template: Template,
-        private categorias: Categoria[] = []
+        private categorias: Categoria[] = [],
+        private substituido: boolean = false,
+        private substituidoPor: number | null = null
     ) {}
 
     public getId(): number {
@@ -35,6 +37,22 @@ export class Adr{
 
     public getCategorias(): Categoria[] {
         return this.categorias;
+    }
+
+    public getSubstituido(): boolean {
+        return this.substituido;
+    }
+
+    public setSubstituido(alterar: boolean): void {
+        this.substituido = alterar;
+    }
+
+    public getSubstituidoPor(): number | null {
+        return this.substituidoPor;
+    }
+
+    public setSubstituidoPor(adrId: number | null): void {
+        this.substituidoPor = adrId;
     }
 
     public setCategorias(categorias: Categoria[]): void {

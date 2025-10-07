@@ -4,7 +4,9 @@ import { Database } from "./Database";
 type adrDTO = {
     id: number,
     nome: string,
-    templateId: number
+    templateId: number,
+    substituido?: boolean,
+    substituidoPor?: number| null
 }
 
 export type adrWithRelations = Prisma.adrGetPayload<{
