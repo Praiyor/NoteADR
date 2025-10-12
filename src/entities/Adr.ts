@@ -66,7 +66,7 @@ export class Adr{
 
     public async validaAdr(filePath: string): Promise<boolean>  {
         const validator = AdrValidator.getInstance();
-        await validator.validate(this, filePath);
-        return true;
+        const valido = await validator.validate(this, filePath);
+        return valido;
     }
 }

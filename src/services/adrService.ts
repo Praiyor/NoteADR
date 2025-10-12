@@ -135,7 +135,7 @@ async function loadTemplate(templateId: number, rootUri: vscode.Uri): Promise<st
 }
 
 function generateAdrContent(templateContent: string, titulo: string): string {
-    let content = templateContent.replace(/^#\s*(Title|Título)\b.*$/im, `# ${titulo}`);
+    let content = templateContent.replace(/^#\s*(Title|Título)\b.*$/im, (match, campo) => `# ${campo}: ${titulo}`);
 
     content = content.replace(/\s*\{[^}]*\}/g, "");
 

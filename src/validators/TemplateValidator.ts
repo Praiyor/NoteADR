@@ -13,4 +13,12 @@ export class TemplateValidator extends Validator<Template> {
     protected loadRules(data: Template): void{
 
     }
+
+    protected getValues(): void {
+        throw new Error("Method not implemented.");
+    }
+
+    protected checkRules(valor: string, regra: any): boolean {
+        throw new Error("Method not implemented.");
+    }
 }
