@@ -4,18 +4,17 @@ import { Field } from "../entities/Field";
 import { Rule } from "../entities/Rule";
 import { Template } from "../entities/Template";
 import { adrWithRelations } from "../repository/adrRepository";
-import { toRecord } from './utils';
 
 export class AdrMapper {
   static toDomain(adr: adrWithRelations): Adr {
     const rule = new Rule(
       adr.template.field.rule.id,
-      toRecord(adr.template.field.rule.regras)
+      Array.isArray(adr.template.field.rule.regras) ? adr.template.field.rule.regras : []
     );
 
     const field = new Field(
       adr.template.field.id,
-      toRecord(adr.template.field.campos),
+      Array.isArray(adr.template.field.campos) ? adr.template.field.campos : [],
       rule
     );
     rule.setField(field);

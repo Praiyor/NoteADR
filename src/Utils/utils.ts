@@ -45,13 +45,6 @@ export function safeStringify(obj: any) {
     });
 }
 
-export function toRecord(json: Prisma.JsonValue | null): Record<string, any> {
-  if (json && typeof json === "object" && !Array.isArray(json)) {
-    return json as Record<string, any>;
-  }
-  return {};
-}
-
 export function cleanFileName(text: string): string {
   return text
     .toLowerCase()

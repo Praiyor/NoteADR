@@ -3,7 +3,7 @@ import { Field } from "./Field";
 export class Rule {
     constructor(
         private id: number,
-        private regras: Record<string, any>,
+        private regras: any[],
         private field?: Field
     ) {}
 
@@ -16,11 +16,11 @@ export class Rule {
     }
 
 
-    public getRegras(): Record<string, any> {
+    public getRegras(): any[] {
         return this.regras;
     }
 
-    public setRegras(regras: Record<string, any>): void {
+    public setRegras(regras: any[]): void {
         this.regras = regras;
     }
 

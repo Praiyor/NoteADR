@@ -46,9 +46,6 @@ export class Template {
     }
 
     public validateTemplate(): boolean {
-        // fazer dps de implementar o validate
         return true;
     }
-
-    //Talvez fazer o getRegras pra transformas o record de fields e regras em algo mais fácil de manipular?
 }

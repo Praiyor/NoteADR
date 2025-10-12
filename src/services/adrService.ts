@@ -23,9 +23,33 @@ export async function getAdrById(adrId: number): Promise<Adr | undefined>{
         return undefined;
     }
 
-    const categoria = AdrMapper.toDomain(adrPrisma);
+    const adr = AdrMapper.toDomain(adrPrisma);
 
-    return categoria;
+    return adr;
+}
+
+export async function getAdrToValidate(filePath: string): Promise<Adr | undefined>{
+    try {
+        const fileName = filePath.split(/[/\\]/).pop();
+        if(!fileName){
+            vscode.window.showErrorMessage("Nome do arquivo Adr Inválido.");
+            return undefined;
+        }
+
+        const idFile = fileName.match(/^(\d+)-/);
+        if(!idFile){
+            vscode.window.showErrorMessage("Não foi possível extrair o ID do arquivo.");
+            return undefined;
+        }
+
+        const adrId = parseInt(idFile[1], 10);
+
+        const adr = getAdrById(adrId);
+        return adr;
+    } catch (error) {
+        vscode.window.showErrorMessage(`Erro ao buscar ADR para validação`);
+        return undefined;
+    }
 }
 
 export async function SubstiteADR(adrId: number, adrSubstitutoId: number){
@@ -111,7 +135,11 @@ async function loadTemplate(templateId: number, rootUri: vscode.Uri): Promise<st
 }
 
 function generateAdrContent(templateContent: string, titulo: string): string {
-    return templateContent.replace(/^#\s.+/m, `# ${titulo}`);
+    let content = templateContent.replace(/^#\s*(Title|Título)\b.*$/im, `# ${titulo}`);
+
+    content = content.replace(/\s*\{[^}]*\}/g, "");
+
+    return content.trim();
 }
 
 async function saveAdrFile(folder: vscode.Uri, id: number, titulo: string, content: string) {

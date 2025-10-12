@@ -16,8 +16,9 @@ export class Database {
 
   public static getInstance(): Database {
     if(!Database.instance){
-      Database.instance = new Database();
-      this.instance.makeDatabasePath();
+      const db = new Database();
+      db.makeDatabasePath();
+      Database.instance = db;
     }
     return Database.instance;
   }

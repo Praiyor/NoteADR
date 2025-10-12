@@ -2,20 +2,20 @@
 
 In each ADR file, write these sections:
 
-# Title
+# Title { "min": 1, "max": 100 }
 
-## Status
+## Status { "enum": ["proposed", "accepted", "rejected", "deprecated", "superseded"] }
 
 What is the status, such as proposed, accepted, rejected, deprecated, superseded, etc.?
 
-## Context
+## Context { "min": 1, "max": 5000 }
 
 What is the issue that we're seeing that is motivating this decision or change?
 
-## Decision
+## Decision { "min": 1, "max": 5000 }
 
 What is the change that we're proposing and/or doing?
 
-## Consequences
+## Consequences { "min": 1, "max": 5000 }
 
 What becomes easier or more difficult to do because of this change?

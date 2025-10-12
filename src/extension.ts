@@ -1,7 +1,9 @@
 
 import * as vscode from 'vscode';
 import { AppView } from './views/AppView';
-import { inicializarNodeAdr } from './services/inicializarService';
+import { getAdrDiretorio, inicializarNodeAdr } from './services/inicializarService';
+import { getWorkspaceRootPath } from './Utils/utils';
+import { getAdrToValidate } from './services/adrService';
 
 
 export function activate(context: vscode.ExtensionContext) {
@@ -45,6 +47,47 @@ export function activate(context: vscode.ExtensionContext) {
 	  	  	AppView.getInstance(context.extensionUri, "categoriaAdr", { adrId });
 	  	})
 	);
+	
+	context.subscriptions.push(
+		vscode.commands.registerCommand('noteadr.validateAdr', async (filePath: string) => {
+			console.log('Validando ADR');
+			if (filePath) {
+				const adr = await getAdrToValidate(filePath);
+				console.log(adr);
+				const validado = await adr?.validaAdr(filePath);
+				if(validado){
+					vscode.window.showInformationMessage(`ADR ${adr?.getId()} - ${adr?.getNome()} está válido!`);
+				} 
+				else{
+					vscode.window.showErrorMessage(`ADR ${adr?.getId()} - ${adr?.getNome()} está inválido! Verifique os campos obrigatórios.`);
+				}
+			} 
+			else {
+				vscode.window.showInformationMessage('Nenhum arquivo ADR fornecido para validação.');
+			}
+		})
+	);
+
+	const adrPath = getAdrDiretorio();
+	const workspaceFolder = getWorkspaceRootPath();
+
+	if(!workspaceFolder){
+		console.log("Nenhum workspace aberto.");
+		return;
+	}
+
+	const folderPath = new vscode.RelativePattern(workspaceFolder.uri.fsPath, `${adrPath}/*.md`);
+	const watcher = vscode.workspace.createFileSystemWatcher(folderPath);
+
+	// Provavelmente n precisa fazer ao criar
+	watcher.onDidCreate(uri => {
+		vscode.commands.executeCommand('noteadr.validateAdr', uri.fsPath);
+	});
+	watcher.onDidChange(uri => {
+		vscode.commands.executeCommand('noteadr.validateAdr', uri.fsPath);
+	});
+
+	context.subscriptions.push(watcher);
 
 }
 

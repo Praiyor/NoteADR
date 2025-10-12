@@ -4,7 +4,7 @@ import { Template } from "./Template";
 export class Field {
     constructor(
         private id: number, 
-        private campos: Record<string, any>,
+        private campos: any[],
         private rule: Rule,
         private template?: Template
     ) {}
@@ -17,11 +17,11 @@ export class Field {
         this.id = id;
     }
 
-    public getCampos(): Record<string, any> {
+    public getCampos(): any[] {
         return this.campos;
     }
 
-    public setCampos(campos: Record<string, any>): void {
+    public setCampos(campos: any[]): void {
         this.campos = campos;
     }
 

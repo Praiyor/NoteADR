@@ -2,18 +2,17 @@ import { Field } from "../entities/Field";
 import { Rule } from "../entities/Rule";
 import { Template } from "../entities/Template";
 import { templateWithRelations } from "../repository/templateRepository";
-import { toRecord } from './utils';
 
 export class TemplateMapper {
   static toDomain(template: templateWithRelations): Template {
     const rule = new Rule(
       template.field.rule.id,
-      toRecord(template.field.rule.regras)
+      Array.isArray(template.field.rule.regras) ? template.field.rule.regras : []
     );
 
     const field = new Field(
       template.field.id,
-      toRecord(template.field.campos),
+      Array.isArray(template.field.campos) ? template.field.campos : [],
       rule
     );
     rule.setField(field);
