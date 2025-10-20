@@ -2,14 +2,15 @@ import { Adr } from "./Adr";
 import { Field } from "./Field";
 
 export class Template {
+    private id?: number;
+
     constructor(
-        private id: number,
         private nome: string,
         private field: Field,
-        private adrs: Adr[] = []
+        private adrs: Adr[] = [],
     ) {}
 
-    public getId(): number {
+    public getId(): number | undefined {
         return this.id;
     }
 

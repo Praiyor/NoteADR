@@ -2,14 +2,15 @@ import { Rule } from "./Rule";
 import { Template } from "./Template";
 
 export class Field {
+    private id?: number;
+
     constructor(
-        private id: number, 
         private campos: any[],
         private rule: Rule,
         private template?: Template
     ) {}
 
-    public getId(): number {
+    public getId(): number | undefined {
         return this.id;
     }
 

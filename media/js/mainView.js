@@ -4,14 +4,22 @@
     const btnNewAdr = document.querySelector('#btn-new-adr');
     const searchInput = document.querySelector('#adr-search');
     const adrList = document.querySelector('#adr-list');
+    const btnImportTemplate = document.querySelector('#btn-import-template');
 
     let allAdrs = [];
 
     btnNewAdr.addEventListener('click', createAdrBtnClicked);
+    btnImportTemplate.addEventListener('click', importTemplateBtnClicked);
 
     function createAdrBtnClicked() {
         vscode.postMessage({
             command: 'create-adr',
+        });
+    }
+
+    function importTemplateBtnClicked() {
+        vscode.postMessage({
+            command: 'import-template'
         });
     }
 

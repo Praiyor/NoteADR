@@ -97,7 +97,7 @@ export async function createADR(titulo: string, templateId: number) {
     try {
         adr = await adrRepository.create({ id, nome: titulo, templateId });
     } catch (error) {
-        vscode.window.showErrorMessage(`Erro ao salvar ADR no banco: ${String(error)}`);
+        vscode.window.showErrorMessage(`Erro ao salvar ADR no banco`);
         return undefined;
     }
 
@@ -107,7 +107,7 @@ export async function createADR(titulo: string, templateId: number) {
         return {adr, fileUri};
     } catch (error) {
         await adrRepository.deleteById(id);
-        vscode.window.showErrorMessage(`Erro ao gravar arquivo do ADR: ${String(error)}`);
+        vscode.window.showErrorMessage(`Erro ao gravar arquivo do ADR`);
         return undefined;
     }
 }
@@ -135,7 +135,13 @@ async function loadTemplate(templateId: number, rootUri: vscode.Uri): Promise<st
 }
 
 function generateAdrContent(templateContent: string, titulo: string): string {
-    let content = templateContent.replace(/^#\s*(Title|Título)\b.*$/im, (match, campo) => `# ${campo}: ${titulo}`);
+    const temTitulo = /^#\s*(Title|Título)\b.*$/im.test(templateContent);
+
+    let content = templateContent;
+
+    if(temTitulo){
+        content = content.replace(/^#\s*(Title|Título)\b.*$/im, `# $1: ${titulo}`);
+    }
 
     content = content.replace(/\s*\{[^}]*\}/g, "");
 
@@ -202,8 +208,18 @@ export async function getAdrFileUri(adrId: number){
         return undefined;
 
     } catch (error) {
-        vscode.window.showErrorMessage(`Erro ao buscar arquivo do ADR ${adrId}: ${String(error)}`);
+        vscode.window.showErrorMessage(`Erro ao buscar arquivo do ADR ${adrId}`);
         return undefined;
+    }
+}
+
+export async function deleteAdr(adr: Adr): Promise<void> {
+    const repository = await getAdrRepository();
+    console.log(adr.getId());
+    try {
+        repository.deleteById(adr.getId());
+    } catch (error) {
+        vscode.window.showErrorMessage(`Erro ao deletar o ADR ${adr.getId()} - ${adr.getNome()} do banco.}`);
     }
 }
 

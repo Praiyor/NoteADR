@@ -28,6 +28,7 @@ export class MainView {
                 <div class="search-container">
                     <input type="text" id="adr-search" placeholder="Pesquisar ADR..." />
                     <button id="btn-new-adr">Novo ADR</button>
+                    <button id="btn-import-template">Importar Template</button>
                 </div>
 
                 <div id="adr-list" class="adr-list">

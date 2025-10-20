@@ -4,7 +4,7 @@ import { CreateADR } from './CreateADRView';
 import { createADR, getAdrById, getAdrFileUri, getAdrs, SubstiteADR } from '../services/adrService';
 import { safeStringify } from '../Utils/utils';
 import { SubstituirADR } from './SubstituirView';
-import { getTemplates } from '../services/templateService';
+import { getTemplates, saveTemplate } from '../services/templateService';
 import { CategoriaView } from './CategoriasView';
 import { addCategoria, getCategoriaById, getCategorias, removeCategoria } from '../services/categoriaService';
 
@@ -199,6 +199,33 @@ export class AppView {
                         const substituteAdrId = data.substituteAdr;
                         const result = await SubstiteADR(adrId, substituteAdrId);
                         if(result){
+                            vscode.commands.executeCommand('noteadr.abrirMainView');
+                        }
+
+                        break;
+                    }
+
+                    case 'import-template': {
+                        const templateSelect = await vscode.window.showOpenDialog({
+                            canSelectMany: false,
+                            openLabel: 'Importar Template',
+                            filters: {
+                                'Markdown files': ['md']
+                            }
+                        });
+
+                        if(templateSelect && templateSelect.length > 0){
+                            const fileUri = templateSelect[0];
+                            const fileContent = (await vscode.workspace.fs.readFile(fileUri)).toString();
+
+                            const boolean = await saveTemplate(fileUri.path.split('/').pop() ?? 'template.md', fileContent);
+
+                            if(boolean){
+                                vscode.window.showInformationMessage('Template importado com sucesso!');
+                            }else {
+                                vscode.window.showErrorMessage('Erro ao importar template.');
+                            }
+
                             vscode.commands.executeCommand('noteadr.abrirMainView');
                         }
 

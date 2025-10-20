@@ -8,22 +8,25 @@ import { adrWithRelations } from "../repository/adrRepository";
 export class AdrMapper {
   static toDomain(adr: adrWithRelations): Adr {
     const rule = new Rule(
-      adr.template.field.rule.id,
       Array.isArray(adr.template.field.rule.regras) ? adr.template.field.rule.regras : []
     );
 
+    rule.setId(adr.template.field.rule.id);
+
     const field = new Field(
-      adr.template.field.id,
       Array.isArray(adr.template.field.campos) ? adr.template.field.campos : [],
       rule
     );
+    field.setId(adr.template.field.id);
     rule.setField(field);
 
     const template = new Template(
-      adr.template.id,
       adr.template.nome,
-      field
+      field,
+      []
     );
+    
+    template.setId(adr.template.id);
     field.setTemplate(template);
 
     const categorias = adr.categorias.map(

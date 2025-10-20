@@ -23,7 +23,7 @@ export abstract class Validator<T>{
     return Validator.instances.get(this)! as U;
   }
 
-  public abstract validate(data: T, filePath: string): Promise<boolean>;
+  public abstract validate(data: T, filePath: string): Promise<any>;
 
   protected abstract loadRules(data: T): void;
 

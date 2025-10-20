@@ -6,18 +6,19 @@ import { templateWithRelations } from "../repository/templateRepository";
 export class TemplateMapper {
   static toDomain(template: templateWithRelations): Template {
     const rule = new Rule(
-      template.field.rule.id,
       Array.isArray(template.field.rule.regras) ? template.field.rule.regras : []
     );
+    rule.setId(template.field.rule.id);
 
     const field = new Field(
-      template.field.id,
       Array.isArray(template.field.campos) ? template.field.campos : [],
       rule
     );
+    field.setId(template.field.id);
     rule.setField(field);
 
-    const domainTemplate = new Template(template.id, template.nome, field);
+    const domainTemplate = new Template(template.nome, field);
+    domainTemplate.setId(template.id);
     field.setTemplate(domainTemplate);
 
     return domainTemplate;

@@ -1,9 +1,9 @@
 
 import * as vscode from 'vscode';
 import { AppView } from './views/AppView';
-import { getAdrDiretorio, inicializarNodeAdr } from './services/inicializarService';
+import { getAdrDiretorio, getTemplateDiretorio, inicializarNodeAdr } from './services/inicializarService';
 import { getWorkspaceRootPath } from './Utils/utils';
-import { getAdrToValidate } from './services/adrService';
+import { deleteAdr, getAdrById, getAdrToValidate } from './services/adrService';
 
 
 export function activate(context: vscode.ExtensionContext) {
@@ -68,7 +68,22 @@ export function activate(context: vscode.ExtensionContext) {
 		})
 	);
 
+	context.subscriptions.push(
+		vscode.commands.registerCommand('noteadr.deleteAdr', async (fileName: string) => {
+			vscode.window.showInformationMessage('Comando de deletar ADR acionado.');
+			if(fileName){
+				const adr = await getAdrById(parseInt(fileName.split("-")[0], 10));
+
+				if(adr){
+					deleteAdr(adr);
+					vscode.window.showInformationMessage(`ADR ${adr.getId()} - ${adr.getNome()} deletado do banco.`);
+				}
+			}
+		})
+	);
+
 	const adrPath = getAdrDiretorio();
+	const templatePath = getTemplateDiretorio();
 	const workspaceFolder = getWorkspaceRootPath();
 
 	if(!workspaceFolder){
@@ -76,18 +91,30 @@ export function activate(context: vscode.ExtensionContext) {
 		return;
 	}
 
-	const folderPath = new vscode.RelativePattern(workspaceFolder.uri.fsPath, `${adrPath}/*.md`);
-	const watcher = vscode.workspace.createFileSystemWatcher(folderPath);
-
+	const adrFolderPath = new vscode.RelativePattern(workspaceFolder.uri.fsPath, `${adrPath}/*.md`);
+	const watcherAdr = vscode.workspace.createFileSystemWatcher(adrFolderPath);
+	
 	// Provavelmente n precisa fazer ao criar
-	watcher.onDidCreate(uri => {
+	watcherAdr.onDidCreate(uri => {
 		vscode.commands.executeCommand('noteadr.validateAdr', uri.fsPath);
 	});
-	watcher.onDidChange(uri => {
+	watcherAdr.onDidChange(uri => {
 		vscode.commands.executeCommand('noteadr.validateAdr', uri.fsPath);
+	});
+	watcherAdr.onDidDelete(uri => {
+		const fileName = uri.fsPath.split(/[/\\]/).pop(); 
+		vscode.commands.executeCommand('noteadr.deleteAdr', fileName);
 	});
 
-	context.subscriptions.push(watcher);
+	const templateFolderPath = new vscode.RelativePattern(workspaceFolder.uri.fsPath, `${templatePath}/*.md`);
+	const watcherTemplate = vscode.workspace.createFileSystemWatcher(templateFolderPath);
+
+	watcherTemplate.onDidDelete(uri => {
+		const fileName = uri.fsPath.split(/[/\\]/).pop(); 
+		console.log(`Template deletado: ${fileName}`);
+	});
+
+	context.subscriptions.push(watcherAdr);
 
 }
 

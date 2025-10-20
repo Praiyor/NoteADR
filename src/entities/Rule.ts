@@ -1,13 +1,14 @@
 import { Field } from "./Field";
 
 export class Rule {
+    private id?: number;
+
     constructor(
-        private id: number,
         private regras: any[],
         private field?: Field
     ) {}
 
-    public getId(): number {
+    public getId(): number | undefined {
         return this.id;
     }
 
