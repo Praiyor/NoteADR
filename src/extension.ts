@@ -4,6 +4,7 @@ import { AppView } from './views/AppView';
 import { getAdrDiretorio, getTemplateDiretorio, inicializarNodeAdr } from './services/inicializarService';
 import { getWorkspaceRootPath } from './Utils/utils';
 import { deleteAdr, getAdrById, getAdrToValidate } from './services/adrService';
+import { deleteTemplateByFileName } from './services/templateService';
 
 
 export function activate(context: vscode.ExtensionContext) {
@@ -82,6 +83,15 @@ export function activate(context: vscode.ExtensionContext) {
 		})
 	);
 
+	context.subscriptions.push(
+		vscode.commands.registerCommand('noteadr.deleteTemplate', async (fileName: string) => {
+			vscode.window.showInformationMessage('Comando de deletar Template acionado.');
+			if(fileName){
+				deleteTemplateByFileName(fileName);
+			}
+		})
+	);
+
 	const adrPath = getAdrDiretorio();
 	const templatePath = getTemplateDiretorio();
 	const workspaceFolder = getWorkspaceRootPath();
@@ -111,7 +121,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 	watcherTemplate.onDidDelete(uri => {
 		const fileName = uri.fsPath.split(/[/\\]/).pop(); 
-		console.log(`Template deletado: ${fileName}`);
+		vscode.commands.executeCommand('noteadr.deleteTemplate', fileName);
 	});
 
 	context.subscriptions.push(watcherAdr);

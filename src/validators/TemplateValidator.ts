@@ -1,5 +1,3 @@
-import { Template } from "../entities/Template";
-import { Validator } from "./Validator";
 import * as vscode from 'vscode';
 
 type validatorResult = {
@@ -43,6 +41,15 @@ export class TemplateValidator  {
             return { valido: false, campos, regras };
         }
 
+        const regrasPermitidas = [
+            "wordCount",
+            "enum",
+            "contains",
+            "notContains",
+            "noSpecialChars",
+            "date"
+        ];
+
         for(let i = 0; i < regras.length; i++){
             const regra = regras[i];
             const campo = campos[i];
@@ -50,6 +57,15 @@ export class TemplateValidator  {
             if(typeof regra !== 'object'){
                 vscode.window.showErrorMessage(`Regra inválida para o campo "${campo}". Deve ser um objeto válido.`);
                 return { valido: false, campos, regras };
+            }
+
+            for (const chave of Object.keys(regra)) {
+                if (!regrasPermitidas.includes(chave)) {
+                    vscode.window.showErrorMessage(
+                        `Regra "${chave}" desconhecida no campo "${campo}".`
+                    );
+                    return { valido: false, campos, regras };
+                }
             }
 
             if (regra.wordCount) {

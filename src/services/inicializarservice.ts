@@ -12,23 +12,24 @@ export async function inicializarNodeAdr(context: vscode.ExtensionContext): Prom
 
     const adrDiretorio = vscode.Uri.joinPath(root.uri, getAdrDiretorio());
     const templateDiretorio = vscode.Uri.joinPath(root.uri, getTemplateDiretorio());
+    const templateFile = vscode.Uri.joinPath(templateDiretorio, "decision-record.md");
 
-    if(!await existeDiretorio(adrDiretorio)){
-        console.log("Não existe ainda");
+    if (!await existeDiretorio(adrDiretorio)) {
         await criarDiretorio(adrDiretorio);
+    }
+
+    if (!await existeDiretorio(templateDiretorio)) {
         await criarDiretorio(templateDiretorio);
+    }
+
+        if (!await existeArquivo(templateFile)) {
         await createTemplate(context, templateDiretorio);
-    }else{
-        console.log("Já existe");
     }
 
     const db = Database.getInstance();
     const dbDir = db.getDatabaseConfig();
     if(!await existeArquivo(vscode.Uri.joinPath(root.uri, dbDir, "extension.db"))){
-        console.log("Banco não existe, criando...");
         await db.initDatabase();
-    } else{
-        console.log("Banco já existe");
     }
 
     console.log(`noteADR iniciado!`);

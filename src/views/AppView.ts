@@ -4,7 +4,7 @@ import { CreateADR } from './CreateADRView';
 import { createADR, getAdrById, getAdrFileUri, getAdrs, SubstiteADR } from '../services/adrService';
 import { safeStringify } from '../Utils/utils';
 import { SubstituirADR } from './SubstituirView';
-import { getTemplates, saveTemplate } from '../services/templateService';
+import { getTemplates, getTemplatesForAdr, saveTemplate } from '../services/templateService';
 import { CategoriaView } from './CategoriasView';
 import { addCategoria, getCategoriaById, getCategorias, removeCategoria } from '../services/categoriaService';
 
@@ -90,7 +90,7 @@ export class AppView {
                     }
 
                     case 'load-templates': {
-                        const templates = await getTemplates();
+                        const templates = await getTemplatesForAdr();
                         
                         this.webViewPanel.webview.postMessage({
                             type: "load-templates",
@@ -229,6 +229,11 @@ export class AppView {
                             vscode.commands.executeCommand('noteadr.abrirMainView');
                         }
 
+                        break;
+                    }
+
+                    case 'show-error': {
+                        vscode.window.showErrorMessage(data.text);
                         break;
                     }
                 }

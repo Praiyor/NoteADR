@@ -13,9 +13,18 @@
     });
 
     function createAdrBtnClicked() {
+        const titulo = inputTitulo.value?.trim();
+        if(!titulo){
+            vscode.postMessage({
+                command: 'show-error',
+                text: 'Informe um título para criar um ADR'
+            });
+            return;
+        }
+        
         vscode.postMessage({
             command: 'new-adr',
-            titulo: inputTitulo.value,
+            titulo: titulo,
             templateId: selectTemplate.value
         });
     }

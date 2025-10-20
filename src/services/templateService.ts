@@ -6,8 +6,9 @@ import { templateRepository } from "../repository/templateRepository";
 import { TemplateMapper } from "../Utils/templateMapper";
 import { getWorkspaceRootPath } from "../Utils/utils";
 import { TemplateValidator } from "../validators/TemplateValidator";
+import { getAdrs } from "./adrService";
 import { createField} from "./fieldService";
-import { getTemplateDiretorio } from "./inicializarService";
+import { existeDiretorio, getTemplateDiretorio } from "./inicializarService";
 import { createRule } from "./ruleService";
 import * as vscode from 'vscode';
 
@@ -17,6 +18,33 @@ export async function getTemplates(){
     const templates = TemplateMapper.toDomainList(templatesPrisma);
 
     return templates;
+}
+
+export async function getTemplatesForAdr(){
+    const templatesBanco = await getTemplates();
+
+    const root = getWorkspaceRootPath();
+    if (!root) {
+        vscode.window.showErrorMessage("Nenhum workspace aberto.");
+        return [];
+    }
+
+    const templateDir = vscode.Uri.joinPath(root.uri, getTemplateDiretorio());
+
+    if (!await existeDiretorio(templateDir)) {
+        return [];
+    }
+
+    const arquivos = await vscode.workspace.fs.readDirectory(templateDir);
+    const nomesArquivos = arquivos
+        .filter(([name, type]) => type === vscode.FileType.File && name.endsWith(".md"))
+        .map(([name]) => name.replace(/\.md$/i, ''));
+
+    const templatesDisponiveis = templatesBanco.filter(template =>
+        nomesArquivos.includes(template.getNome())
+    );
+
+    return templatesDisponiveis;
 }
 
 export async function saveTemplate(nome: string, conteudo: string): Promise<boolean> {
@@ -29,6 +57,12 @@ export async function saveTemplate(nome: string, conteudo: string): Promise<bool
     }
 
     nome = nome.replace(/\.md$/i, '');
+
+    const templates = await getTemplates();
+    if (templates.some(t => t.getNome() === nome)) {
+        vscode.window.showErrorMessage(`Já existe um template chamado "${nome}" no banco.`);
+        return false;
+    }
 
     const rule = new Rule(regras);
     const field = new Field(campos, rule);
@@ -83,6 +117,47 @@ export async function saveTemplate(nome: string, conteudo: string): Promise<bool
     }
     
     return true;
+}
+
+export async function deleteTemplateByFileName(fileName: string): Promise<void> {
+    const nome = fileName.replace(/\.md$/i, '');
+    const templates = await getTemplates();
+
+    const templatesToDelete = templates.filter(t => t.getNome() === nome);
+
+    if (templatesToDelete.length === 0) {
+        vscode.window.showWarningMessage(`Nenhum template chamado "${nome}" encontrado no banco.`);
+        return;
+    }
+
+    const repository = await getTemplateRepository();
+    const adrs = await getAdrs();
+
+    try {
+        for (const template of templatesToDelete) {
+            const id = template.getId();
+            if (id === undefined) {
+                continue;
+            }
+
+            const adrsUsandoTemplate = adrs.filter(adr => adr.getTemplate().getId() === id);
+            if (adrsUsandoTemplate.length > 0) {
+                vscode.window.showErrorMessage(`Não é possível deletar o template "${nome}" com id "${id}" do banco. Ele está sendo usado por ${adrsUsandoTemplate.length} ADR(s).`);
+                continue;
+            }
+            
+            await repository.deleteById(id);
+        }
+
+        const msg = templatesToDelete.length > 1
+            ? `Foram deletados ${templatesToDelete.length} templates com o nome "${nome}".`
+            : `Template "${nome}" deletado com sucesso.`;
+
+        vscode.window.showInformationMessage(msg);
+
+    } catch (error) {
+        vscode.window.showErrorMessage(`Erro ao deletar template "${nome}"`);
+    }
 }
 
 async function getTemplateRepository(){

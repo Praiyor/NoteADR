@@ -76,15 +76,17 @@
             
                 const dropdown = document.createElement('div');
                 dropdown.className = "dropdown";
-            
-                const alterBtn = document.createElement('button');
-                alterBtn.textContent = "Alterar ADR";
-                alterBtn.addEventListener("click", () => {
-                    vscode.postMessage({
-                        command: 'alter-adr',
-                        value: adr.id
+                if(!adr.substituido){
+                    const alterBtn = document.createElement('button');
+                    alterBtn.textContent = "Alterar ADR";
+                    alterBtn.addEventListener("click", () => {
+                        vscode.postMessage({
+                            command: 'alter-adr',
+                            value: adr.id
+                        });
                     });
-                });
+                    dropdown.appendChild(alterBtn);
+                }
             
                 const categoriesBtn = document.createElement('button');
                 categoriesBtn.textContent = "Categorias";
@@ -104,7 +106,7 @@
                     });
                 });
             
-                dropdown.appendChild(alterBtn);
+                
                 dropdown.appendChild(categoriesBtn);
                 dropdown.appendChild(replaceBtn);
             

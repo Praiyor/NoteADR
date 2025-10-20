@@ -42,13 +42,12 @@ export class Database {
 
     try {
       await exec(`npx prisma db push --schema="${prismaSchemaPath}"`);
-      vscode.window.showInformationMessage(`Banco pronto em: ${this.dbPath}`);
 
       this.getPrismaClient();
 
       await this.seedDatabase();
     } catch (error: any) {
-      vscode.window.showErrorMessage(`Erro ao criar o banco: ${error.message}`);
+      vscode.window.showErrorMessage(`Erro ao criar o banco`);
     }
   }
 
