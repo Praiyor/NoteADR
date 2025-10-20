@@ -115,6 +115,7 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 
 	context.subscriptions.push(watcherAdr);
+	context.subscriptions.push(watcherTemplate);
 
 }
 

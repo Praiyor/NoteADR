@@ -143,7 +143,14 @@ function generateAdrContent(templateContent: string, titulo: string): string {
         content = content.replace(/^#\s*(Title|Título)\b.*$/im, `# $1: ${titulo}`);
     }
 
-    content = content.replace(/\s*\{[^}]*\}/g, "");
+    content = content
+    .replace(/\{[^}]*\}/g, "")
+    .replace(/,\s*"(?:contains|notContains|noSpecialChars|wordCount|enum|date)"\s*:\s*\[[^\]]*\]/g, "")
+    .replace(/,\s*(?=\n|$)/g, "")
+    .replace(/[{}]+/g, "")
+    .replace(/[ \t]+$/gm, "")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
 
     return content.trim();
 }

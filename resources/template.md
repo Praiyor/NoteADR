@@ -2,20 +2,20 @@
 
 In each ADR file, write these sections:
 
-# Title { "min": 1, "max": 100 }
+# Title { "wordCount": { "min": 1, "max": 70 }, "noSpecialChars": true }
 
 ## Status { "enum": ["proposed", "accepted", "rejected", "deprecated", "superseded"] }
 
 What is the status, such as proposed, accepted, rejected, deprecated, superseded, etc.?
 
-## Context { "min": 1, "max": 5000 }
+## Context { "wordCount": { "min": 5, "max": 1000 }, "notContains": ["lorem", "ipsum"] }
 
 What is the issue that we're seeing that is motivating this decision or change?
 
-## Decision { "min": 1, "max": 5000 }
+## Decision { "wordCount": { "min": 5, "max": 1000 }, "contains": ["will", "decide"] }
 
 What is the change that we're proposing and/or doing?
 
-## Consequences { "min": 1, "max": 5000 }
+## Consequences { "wordCount": { "min": 5, "max": 1000 } }
 
 What becomes easier or more difficult to do because of this change?

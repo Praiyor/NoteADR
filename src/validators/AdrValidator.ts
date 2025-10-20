@@ -82,20 +82,52 @@ export class AdrValidator extends Validator<Adr> {
   }
 
   protected checkRules(valor: string, regra: any): boolean {
-    if(!regra){
+    if (!regra) {
       return true;
     }
 
-    if(regra?.min !== undefined && valor.length < regra.min){
-      return false;
-    }
-    if(regra?.max !== undefined && valor.length > regra.max){
-      return false;
+    const valorLower = valor.toLowerCase();
+
+    if (regra.wordCount) {
+      const words = valor.trim().split(/\s+/).length;
+      const { min, max } = regra.wordCount;
+      if ((min && words < min) || (max && words > max)) {
+        return false;
+      }
     }
 
-    if(regra.enum ){
+    if (regra.enum) {
       const enums = regra.enum.map((e: string) => e.toLowerCase());
-      if(!enums.includes(valor.toLowerCase())){
+      if (!enums.includes(valor.toLowerCase())) {
+        return false;
+      }
+    }
+
+    if (regra.noSpecialChars) {
+      if (/[^a-zA-Z0-9\s]/.test(valor)) {
+        return false;
+      }
+    }
+
+    if (regra.contains) {
+      const required = (Array.isArray(regra.contains) ? regra.contains : [regra.contains])
+        .map((w: string) => w.toLowerCase());
+      if (!required.some((word: string) => valorLower.includes(word))) {
+        return false;
+      }
+    }
+
+    if (regra.notContains) {
+      const forbidden = (Array.isArray(regra.notContains) ? regra.notContains : [regra.notContains])
+        .map((w: string) => w.toLowerCase());
+      if (forbidden.some((word: string) => valorLower.includes(word))) {
+        return false;
+      }
+    }
+
+    if (regra.date) {
+      const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+      if (!dateRegex.test(valor.trim())) {
         return false;
       }
     }
