@@ -95,7 +95,7 @@ export async function createADR(titulo: string, templateId: number) {
     const adrRepository = await getAdrRepository();
     let adr;
     try {
-        adr = await adrRepository.create({ id, nome: titulo, templateId });
+        adr = await adrRepository.create({ id, nome: titulo, templateId});
     } catch (error) {
         vscode.window.showErrorMessage(`Erro ao salvar ADR no banco`);
         return undefined;
@@ -222,7 +222,6 @@ export async function getAdrFileUri(adrId: number){
 
 export async function deleteAdr(adr: Adr): Promise<void> {
     const repository = await getAdrRepository();
-    console.log(adr.getId());
     try {
         repository.deleteById(adr.getId());
     } catch (error) {
@@ -230,7 +229,7 @@ export async function deleteAdr(adr: Adr): Promise<void> {
     }
 }
 
-async function getAdrRepository(){
+export async function getAdrRepository(){
     return new adrRepository();
 }
 

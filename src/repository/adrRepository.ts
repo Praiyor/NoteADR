@@ -7,6 +7,7 @@ type adrDTO = {
     templateId: number,
     substituido?: boolean,
     substituidoPor?: number| null
+    valido?: boolean
 }
 
 export type adrWithRelations = Prisma.adrGetPayload<{

@@ -18,6 +18,7 @@ model adr {
   template       template    @relation(fields: [templateId], references: [id])
   substituido    Boolean     @default(false)
   substituidoPor Int?
+  valido         Boolean     @default(false)
 }
 
 model template {

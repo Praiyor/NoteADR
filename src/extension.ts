@@ -2,14 +2,12 @@
 import * as vscode from 'vscode';
 import { AppView } from './views/AppView';
 import { getAdrDiretorio, getTemplateDiretorio, inicializarNodeAdr } from './services/inicializarService';
-import { getWorkspaceRootPath } from './Utils/utils';
-import { deleteAdr, getAdrById, getAdrToValidate } from './services/adrService';
+import { getWorkspaceRootPath, validateAdrIds } from './Utils/utils';
+import { deleteAdr, getAdrById, getAdrRepository, getAdrToValidate } from './services/adrService';
 import { deleteTemplateByFileName } from './services/templateService';
 
 
 export function activate(context: vscode.ExtensionContext) {
-
-	console.log('Congratulations, your extension "noteadr" is now active!');
 
 	context.subscriptions.push(
 		vscode.commands.registerCommand('noteadr.iniciarNoteAdr', () => {
@@ -22,7 +20,8 @@ export function activate(context: vscode.ExtensionContext) {
 	);
 
 	context.subscriptions.push(
-		vscode.commands.registerCommand('noteadr.abrirMainView', () => {
+		vscode.commands.registerCommand('noteadr.abrirMainView', async () => {
+			await validateAdrIds();
 			AppView.getInstance(context.extensionUri, "main");
 		})
 	);
@@ -51,11 +50,19 @@ export function activate(context: vscode.ExtensionContext) {
 	
 	context.subscriptions.push(
 		vscode.commands.registerCommand('noteadr.validateAdr', async (filePath: string) => {
-			console.log('Validando ADR');
 			if (filePath) {
 				const adr = await getAdrToValidate(filePath);
-				console.log(adr);
+				if(!adr){
+					return;
+				}
+
 				const validado = await adr?.validaAdr(filePath);
+				const repository = getAdrRepository();
+
+				if(adr.getValido() !== validado){
+					adr.setValido(validado);
+					(await repository).updateById(adr.getId(), {valido: validado});
+				}
 				if(validado){
 					vscode.window.showInformationMessage(`ADR ${adr?.getId()} - ${adr?.getNome()} está válido!`);
 				} 
@@ -105,9 +112,9 @@ export function activate(context: vscode.ExtensionContext) {
 	const watcherAdr = vscode.workspace.createFileSystemWatcher(adrFolderPath);
 	
 	// Provavelmente n precisa fazer ao criar
-	watcherAdr.onDidCreate(uri => {
-		vscode.commands.executeCommand('noteadr.validateAdr', uri.fsPath);
-	});
+	// watcherAdr.onDidCreate(uri => {
+	// 	vscode.commands.executeCommand('noteadr.validateAdr', uri.fsPath);
+	// });
 	watcherAdr.onDidChange(uri => {
 		vscode.commands.executeCommand('noteadr.validateAdr', uri.fsPath);
 	});

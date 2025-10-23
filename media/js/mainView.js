@@ -49,7 +49,17 @@
         
             const info = document.createElement('div');
             info.className = "adr-info";
-            info.textContent = `${adr.id} - ${adr.nome}`;
+
+            const statusCircle = document.createElement('span');
+            statusCircle.className = 'adr-status-circle';
+            statusCircle.style.backgroundColor = adr.valido 
+            ? 'var(--vscode-testing-iconPassed)'
+            : 'var(--vscode-testing-iconFailed)';
+
+            info.appendChild(statusCircle);
+            const nameText = document.createElement('span');
+            nameText.textContent = `${adr.id} - ${adr.nome}`;
+            info.appendChild(nameText);
             
             if (adr.substituido) {
                 info.innerHTML = `<span class="adr-substituido">${adr.id} - ${adr.nome} (Substituído)</span>`;

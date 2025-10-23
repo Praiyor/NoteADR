@@ -33,7 +33,7 @@ export class AdrMapper {
       c => new Categoria(c.id, c.nome)
     );
 
-    return new Adr(adr.id, adr.nome, template, categorias, adr.substituido ?? false, adr.substituidoPor ?? null);
+    return new Adr(adr.id, adr.nome, template, categorias, adr.substituido ?? false, adr.substituidoPor ?? null, adr.valido ?? false);
   }
 
   static toDomainList(adrs: adrWithRelations[]): Adr[] {

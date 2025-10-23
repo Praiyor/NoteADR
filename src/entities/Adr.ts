@@ -9,7 +9,8 @@ export class Adr{
         private template: Template,
         private categorias: Categoria[] = [],
         private substituido: boolean = false,
-        private substituidoPor: number | null = null
+        private substituidoPor: number | null = null,
+        private valido: boolean = false
     ) {}
 
     public getId(): number {
@@ -62,6 +63,14 @@ export class Adr{
 
     public addCategoria(categoria: Categoria): void {
         this.categorias.push(categoria);
+    }
+
+    public getValido(): boolean {
+        return this.valido;
+    }
+
+    public setValido(valido: boolean): void {
+        this.valido = valido;
     }
 
     public async validaAdr(filePath: string): Promise<boolean>  {

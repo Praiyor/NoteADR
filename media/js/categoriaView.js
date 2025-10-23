@@ -34,8 +34,6 @@
         }
 
         categorias.forEach(categoria => {
-            console.log(categoria);
-            console.log(categoria.id);
             const item = document.createElement('div');
             item.className = "categoria-item";
 
@@ -47,8 +45,7 @@
 
             btn.addEventListener("click", () => {
                 const isSelected = adrCategorias.includes(categoria.id);
-                console.log(categoria.id);
-
+                
                 if (isSelected) {
                     vscode.postMessage({
                         command: 'remove-categoria',

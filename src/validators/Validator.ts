@@ -17,7 +17,6 @@ export abstract class Validator<T>{
 
   public static getInstance<T, U extends Validator<T>>(this: new () => U): U {
     if (!Validator.instances.has(this)) {
-      console.log(Validator.instances);
       Validator.instances.set(this, new this());
     }
     return Validator.instances.get(this)! as U;

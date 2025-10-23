@@ -75,7 +75,16 @@ button.secondary:hover {
 }
 
 .adr-info {
+	display: flex;
+	align-items: center;
+	gap: 8px;
 	font-weight: 500;
+}
+.adr-status-circle {
+	width: 10px;
+	height: 10px;
+	border-radius: 50%;
+	flex-shrink: 0;
 }
 
 .adr-actions {

@@ -1,5 +1,6 @@
-import { Prisma } from '@prisma/client';
+import { Prisma, adr } from '@prisma/client';
 import * as vscode from 'vscode';
+import { getAdrDiretorio } from '../services/inicializarService';
 
 export function getNonce() {
     let text = "";
@@ -61,5 +62,49 @@ export async function readMarkdownFile(fileUri: vscode.Uri, notFoundMsg: string)
     } catch {
         vscode.window.showErrorMessage(notFoundMsg);
         return undefined;
+    }
+}
+
+export async function validateAdrIds():Promise<void>{
+    const root = getWorkspaceRootPath();
+
+    if(!root){
+        return;
+    }
+
+    const adrDir = vscode.Uri.joinPath(root.uri, getAdrDiretorio());
+
+    try {
+        const adrs = await vscode.workspace.fs.readDirectory(adrDir);
+        const ids = new Map<number, string[]>();
+
+        for(const [fileName, fileType] of adrs){
+            if(fileType !== vscode.FileType.File || !fileName.endsWith('.md')){
+                continue;
+            }
+
+            const match = fileName.match(/^(\d+)-/);
+            if(!match){
+                continue;
+            }
+
+            const id = Number(match[1]);
+
+            if(!ids.has(id)){
+                ids.set(id, [fileName]);
+            } else {
+                ids.get(id)?.push(fileName);
+            }
+
+            const duplicados = Array.from(ids.entries()).filter(([_, files]) => files.length > 1);
+
+            if(duplicados.length > 0){
+                const msg = duplicados.map(([id, files]) => `ID ${id}: ${files.join(', ')}`).join('\n');
+                vscode.window.showErrorMessage(`ADRs com o mesmo ID foram encontrados: ${msg}`);
+                return;
+            }
+        }
+    } catch (error) {
+        vscode.window.showErrorMessage('Erro ao tentar verificar o ID dos ADRs na pasta');
     }
 }
