@@ -51,9 +51,10 @@ export class fieldRepository {
         }
     }
 
-    async updateById(fieldId: number, fieldData: Partial<fieldDTO>): Promise<field | null>{
+    async updateById(fieldId: number, fieldData: Partial<fieldDTO>, tx?: Prisma.TransactionClient ): Promise<field | null>{
+        const client = tx ?? this.prisma;
         try {
-            return await this.prisma.field.update({
+            return await client.field.update({
                 where:{
                     id: fieldId
                 },

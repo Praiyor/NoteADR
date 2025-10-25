@@ -30,7 +30,7 @@ export class MainView {
                     <button id="btn-new-adr">Novo ADR</button>
                     <button id="btn-import-template">Importar Template</button>
                 </div>
-
+                <div id="categoria-filtros" class="categoria-filtros"></div>
                 <div id="adr-list" class="adr-list">
                     
                 </div>

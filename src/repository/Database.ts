@@ -79,12 +79,19 @@ export class Database {
       }
     });
 
-    const categorias = ["Performance", "Segurança", "Usabilidade", "Escalabilidade", "Manutenibilidade"];
-    const categoriaCriadas = [];
+     const categorias = [
+        "Performance",
+        "Segurança",
+        "Usabilidade",
+        "Escalabilidade",
+        "Manutenibilidade",
+        "Arquitetura",
+        "Testabilidade",
+        "Confiabilidade"
+      ];
 
     for (const nome of categorias) {
       const cat = await this.prisma.categoria.create({ data: { nome } });
-      categoriaCriadas.push(cat);
     }
 
   }

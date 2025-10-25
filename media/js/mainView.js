@@ -5,11 +5,80 @@
     const searchInput = document.querySelector('#adr-search');
     const adrList = document.querySelector('#adr-list');
     const btnImportTemplate = document.querySelector('#btn-import-template');
+    const categoriaFiltros = document.querySelector('#categoria-filtros');
 
     let allAdrs = [];
+    const colorMap = {
+        "Performance": "#4CAF50",
+        "Segurança": "#2196F3",
+        "Usabilidade": "#9C27B0",
+        "Escalabilidade": "#FF9800",
+        "Manutenibilidade": "#E91E63",
+        "Arquitetura": "#00BCD4",
+        "Testabilidade": "#8BC34A",
+        "Confiabilidade": "#FFC107"
+    };
+
+
+    const categoriasDisponiveis = [
+        "Performance", "Segurança", "Usabilidade", "Escalabilidade",
+        "Manutenibilidade", "Arquitetura", "Testabilidade", "Confiabilidade"
+    ];
+    let categoriaSelecionada = [];
 
     btnNewAdr.addEventListener('click', createAdrBtnClicked);
     btnImportTemplate.addEventListener('click', importTemplateBtnClicked);
+
+    const filtroBtn = document.createElement('button');
+    filtroBtn.className = "menu-button";
+    filtroBtn.textContent = "☰ Categorias";
+
+    const filtroDropdown = document.createElement('div');
+    filtroDropdown.className = "dropdown";
+
+    categoriasDisponiveis.forEach(categoria => {
+       const label = document.createElement('label');
+       label.className = 'categoria-checkbox-label';
+       
+       const checkbox = document.createElement('input');
+       checkbox.type = 'checkbox';
+       checkbox.value = categoria;
+
+       checkbox.addEventListener('change', () => {
+            if(checkbox.checked){
+                categoriaSelecionada.push(categoria);
+            } else{
+                categoriaSelecionada = categoriaSelecionada.filter(c => c !== categoria);
+            }
+            aplicarFiltros();
+       });
+
+       const colorCircle = document.createElement('span');
+       colorCircle.className = 'color-circle';
+       colorCircle.style.backgroundColor = colorMap[categoria] || "#607D8B";
+
+       const spanText = document.createElement('span');
+       spanText.textContent = categoria;
+
+       label.appendChild(checkbox);
+       label.appendChild(colorCircle);
+       label.appendChild(spanText);
+
+       filtroDropdown.appendChild(label);
+    });
+
+    filtroBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        filtroDropdown.classList.toggle('show');
+    });
+
+    document.addEventListener("click", (e) => {
+	    if (!filtroBtn.contains(e.target) && !filtroDropdown.contains(e.target)) {
+	    	filtroDropdown.classList.remove('show');
+	    }
+    });
+    categoriaFiltros.appendChild(filtroBtn);
+    categoriaFiltros.appendChild(filtroDropdown);
 
     function createAdrBtnClicked() {
         vscode.postMessage({
@@ -32,6 +101,20 @@
                 break;
         }
     });
+
+    function aplicarFiltros(){
+        const query = searchInput.value.toLowerCase();
+
+        let filtered = allAdrs.filter(adr => {
+            const text = `${adr.id} - ${adr.nome}`.toLowerCase();
+            const matchText = text.includes(query);
+            const matchCategoria = categoriaSelecionada.length === 0 ||
+                (adr.categorias && adr.categorias.some(c => categoriaSelecionada.includes(c.nome)));
+            return matchText && matchCategoria;
+        });
+
+        renderAdrList(filtered);
+    }
 
     function renderAdrList(adrs) {
         adrList.innerHTML = "";
@@ -60,6 +143,26 @@
             const nameText = document.createElement('span');
             nameText.textContent = `${adr.id} - ${adr.nome}`;
             info.appendChild(nameText);
+            const location = document.createElement('div');
+            location.className = "adr-info-location";
+            location.appendChild(info);
+
+            if(adr.categorias && adr.categorias.length > 0){
+                const categoriasContainer = document.createElement('div');
+                categoriasContainer.className = "adr-categorias";
+
+                adr.categorias.forEach(categoria => {
+                    const categoriaSpan = document.createElement('span');
+                    categoriaSpan.className = "adr-categoria-span";
+                    categoriaSpan.textContent = categoria.nome;
+
+                    const color = colorMap[categoria.nome] || "#607D8B";
+                    categoriaSpan.style.backgroundColor = color;
+
+                    categoriasContainer.appendChild(categoriaSpan);
+                });
+                location.appendChild(categoriasContainer);
+            }
             
             if (adr.substituido) {
                 info.innerHTML = `<span class="adr-substituido">${adr.id} - ${adr.nome} (Substituído)</span>`;
@@ -133,7 +236,7 @@
                 item.appendChild(dropdown);
             }
         
-            item.appendChild(info);
+            item.appendChild(location);
             item.appendChild(actions);
         
             adrList.appendChild(item);
@@ -151,14 +254,7 @@
         });
 }
 
-    searchInput.addEventListener("input", () => {
-        const query = searchInput.value.toLowerCase();
-        const filtered = allAdrs.filter(adr => {
-            const text = `${adr.id} - ${adr.nome}`.toLowerCase();
-            return text.includes(query);
-        });
-        renderAdrList(filtered);
-    });
+    searchInput.addEventListener("input", aplicarFiltros);
     
     function getAdrList(){
         vscode.postMessage({

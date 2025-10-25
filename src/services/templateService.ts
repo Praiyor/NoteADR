@@ -7,9 +7,9 @@ import { TemplateMapper } from "../Utils/templateMapper";
 import { getWorkspaceRootPath } from "../Utils/utils";
 import { TemplateValidator } from "../validators/TemplateValidator";
 import { getAdrs } from "./adrService";
-import { createField} from "./fieldService";
+import { createField, updateFieldById} from "./fieldService";
 import { existeDiretorio, getTemplateDiretorio } from "./inicializarService";
-import { createRule } from "./ruleService";
+import { createRule, updateRuleById } from "./ruleService";
 import * as vscode from 'vscode';
 
 export async function getTemplates(){
@@ -157,6 +157,51 @@ export async function deleteTemplateByFileName(fileName: string): Promise<void> 
 
     } catch (error) {
         vscode.window.showErrorMessage(`Erro ao deletar template "${nome}"`);
+    }
+}
+
+export async function atualizaTemplateByFileName(fileName: string){
+    const nome = fileName.replace(/\.md$/i, '');
+    const prisma = Database.getInstance().getPrismaClient();
+    const repository = await getTemplateRepository();
+
+    const templateExistente = (await repository.findAll()).find(t => t.nome === nome);
+
+    if(!templateExistente){
+        vscode.window.showWarningMessage(`Template "${nome}" não foi encontrado no banco para atualizar`);
+        return;
+    }
+
+    const root = getWorkspaceRootPath();
+    if (!root) {
+        vscode.window.showErrorMessage("Nenhum workspace aberto para atualizar o template.");
+        return;
+    }
+
+    const templateDir = vscode.Uri.joinPath(root.uri, getTemplateDiretorio());
+    const filePath = vscode.Uri.joinPath(templateDir, `${nome}.md`);
+
+    try {
+        const conteudo = (await vscode.workspace.fs.readFile(filePath)).toString();
+        const validator = new TemplateValidator();
+        const { valido, campos, regras } = await validator.validate(`${nome}.md`, conteudo);
+
+        if(!valido){
+            vscode.window.showErrorMessage(`Template "${nome}" inválido. Atualização cancelada.`);
+            return;
+        }
+
+        const fieldId = templateExistente.field.id;
+        const ruleId = templateExistente.field.rule.id;
+
+        await prisma.$transaction(async tx => {
+          await updateRuleById(ruleId, {regras}, tx);
+          await updateFieldById(fieldId, {campos}, tx);
+        });
+
+        vscode.window.showInformationMessage(`Template "${nome}" atualizado com sucesso no banco.`);
+    } catch (error) {
+        vscode.window.showErrorMessage(`Erro ao atualizar o template "${nome}": ${String(error)}`);
     }
 }
 

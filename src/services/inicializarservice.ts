@@ -32,7 +32,7 @@ export async function inicializarNodeAdr(context: vscode.ExtensionContext): Prom
         await db.initDatabase();
     }
 
-    console.log(`noteADR iniciado!`);
+    vscode.window.showInformationMessage(`noteADR iniciado!`);
 }
 
 async function createTemplate(context: vscode.ExtensionContext, uri:vscode.Uri){

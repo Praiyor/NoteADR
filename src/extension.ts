@@ -4,7 +4,7 @@ import { AppView } from './views/AppView';
 import { getAdrDiretorio, getTemplateDiretorio, inicializarNodeAdr } from './services/inicializarService';
 import { getWorkspaceRootPath, validateAdrIds } from './Utils/utils';
 import { deleteAdr, getAdrById, getAdrRepository, getAdrToValidate } from './services/adrService';
-import { deleteTemplateByFileName } from './services/templateService';
+import { atualizaTemplateByFileName, deleteTemplateByFileName } from './services/templateService';
 
 
 export function activate(context: vscode.ExtensionContext) {
@@ -99,12 +99,21 @@ export function activate(context: vscode.ExtensionContext) {
 		})
 	);
 
+	context.subscriptions.push(
+		vscode.commands.registerCommand('noteadr.atualizaTemplate', async (fileName: string) => {
+			vscode.window.showInformationMessage('Comando de atualizar Template acionado.');
+			if(fileName){
+				atualizaTemplateByFileName(fileName);
+			}
+		})
+	);
+
 	const adrPath = getAdrDiretorio();
 	const templatePath = getTemplateDiretorio();
 	const workspaceFolder = getWorkspaceRootPath();
 
 	if(!workspaceFolder){
-		console.log("Nenhum workspace aberto.");
+		vscode.window.showInformationMessage("Nenhum workspace aberto.");
 		return;
 	}
 
@@ -129,6 +138,10 @@ export function activate(context: vscode.ExtensionContext) {
 	watcherTemplate.onDidDelete(uri => {
 		const fileName = uri.fsPath.split(/[/\\]/).pop(); 
 		vscode.commands.executeCommand('noteadr.deleteTemplate', fileName);
+	});
+	watcherTemplate.onDidChange(uri => {
+		const fileName = uri.fsPath.split(/[/\\]/).pop(); 
+		vscode.commands.executeCommand('noteadr.atualizaTemplate', fileName);
 	});
 
 	context.subscriptions.push(watcherAdr);

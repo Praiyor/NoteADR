@@ -154,3 +154,80 @@ button.secondary:hover {
 	margin-left: 30px;
 	background-color: rgba(255, 255, 255, 0.03);
 }
+
+.adr-categorias {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+	margin-left: 18px;
+	margin-top: 4px;
+}
+
+.adr-categoria-span {
+	padding: 2px 8px;
+	border-radius: 12px;
+	font-size: 11px;
+	font-weight: 500;
+	color: white;
+	user-select: none;
+}
+
+.adr-info-location {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 4px;
+}
+
+#categoria-filtros {
+	position: relative;
+	display: inline-block;
+	margin-bottom: 12px;
+}
+
+#categoria-filtros .menu-button {
+	font-size: 13px;
+	padding: 6px 10px;
+	border-radius: 4px;
+	background: var(--vscode-button-secondaryBackground);
+	color: var(--vscode-button-secondaryForeground);
+	cursor: pointer;
+	border: none;
+}
+
+#categoria-filtros .menu-button:hover {
+	background: var(--vscode-button-secondaryHoverBackground);
+}
+
+#categoria-filtros .dropdown {
+	position: absolute;
+	top: 100%;
+	left: 0;
+	display: none;
+	background: var(--vscode-editor-background);
+	border: 1px solid var(--vscode-editorWidget-border);
+	border-radius: 4px;
+	padding: 8px 10px;
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+	margin-top: 4px;
+	z-index: 100;
+	width: 180px;
+}
+
+#categoria-filtros .dropdown.show {
+	display: block;
+}
+
+.categoria-checkbox-label {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	padding: 4px 0;
+	cursor: pointer;
+}
+
+.color-circle {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}

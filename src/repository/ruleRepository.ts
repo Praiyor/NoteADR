@@ -39,9 +39,10 @@ export class ruleRepository {
         }
     }
 
-    async updateById(ruleId: number, ruleData: Partial<ruleDTO>): Promise<rule | null>{
+    async updateById(ruleId: number, ruleData: Partial<ruleDTO>, tx?: Prisma.TransactionClient): Promise<rule | null>{
+        const client = tx ?? this.prisma;
         try {
-            return await this.prisma.rule.update({
+            return await client.rule.update({
                 where:{
                     id: ruleId
                 },

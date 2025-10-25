@@ -218,7 +218,13 @@ export class AppView {
                             const fileUri = templateSelect[0];
                             const fileContent = (await vscode.workspace.fs.readFile(fileUri)).toString();
 
-                            const boolean = await saveTemplate(fileUri.path.split('/').pop() ?? 'template.md', fileContent);
+                            const fileName = fileUri.path.split('/').pop();
+                            if(!fileName){
+                                vscode.window.showErrorMessage('Nome do arquivo inválido.');
+                                break;
+                            }
+
+                            const boolean = await saveTemplate(fileName, fileContent);
 
                             if(boolean){
                                 vscode.window.showInformationMessage('Template importado com sucesso!');
