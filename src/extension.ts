@@ -56,18 +56,19 @@ export function activate(context: vscode.ExtensionContext) {
 					return;
 				}
 
-				const validado = await adr?.validaAdr(filePath);
+				const result = await adr.validaAdr(filePath);
 				const repository = getAdrRepository();
 
-				if(adr.getValido() !== validado){
-					adr.setValido(validado);
-					(await repository).updateById(adr.getId(), {valido: validado});
+				if(adr.getValido() !== result.valido){
+					(await repository).updateById(adr.getId(), {valido: result.valido});
+					adr.setValido(result.valido);
 				}
-				if(validado){
-					vscode.window.showInformationMessage(`ADR ${adr?.getId()} - ${adr?.getNome()} está válido!`);
-				} 
-				else{
-					vscode.window.showErrorMessage(`ADR ${adr?.getId()} - ${adr?.getNome()} está inválido! Verifique os campos obrigatórios.`);
+
+				if(result.valido){
+					vscode.window.showInformationMessage(`ADR ${adr?.getId()} - ${adr?.getNome()} está válido}`);
+				} else{
+					const mensagens = result.erros.map(e => `• ${e.mensagem}`).join("\n");
+  					vscode.window.showErrorMessage(`ADR ${adr.getId()} inválido:\n${mensagens}`);
 				}
 			} 
 			else {
@@ -120,10 +121,6 @@ export function activate(context: vscode.ExtensionContext) {
 	const adrFolderPath = new vscode.RelativePattern(workspaceFolder.uri.fsPath, `${adrPath}/*.md`);
 	const watcherAdr = vscode.workspace.createFileSystemWatcher(adrFolderPath);
 	
-	// Provavelmente n precisa fazer ao criar
-	// watcherAdr.onDidCreate(uri => {
-	// 	vscode.commands.executeCommand('noteadr.validateAdr', uri.fsPath);
-	// });
 	watcherAdr.onDidChange(uri => {
 		vscode.commands.executeCommand('noteadr.validateAdr', uri.fsPath);
 	});

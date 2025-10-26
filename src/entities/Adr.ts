@@ -1,4 +1,4 @@
-import { AdrValidator } from "../validators/AdrValidator";
+import { AdrValidator, ValidationResult } from "../validators/AdrValidator";
 import { Categoria } from "./Categoria";
 import { Template } from "./Template";
 
@@ -73,9 +73,9 @@ export class Adr{
         this.valido = valido;
     }
 
-    public async validaAdr(filePath: string): Promise<boolean>  {
+    public async validaAdr(filePath: string): Promise<ValidationResult>  {
         const validator = AdrValidator.getInstance();
-        const valido = await validator.validate(this, filePath);
-        return valido;
+        const result = await validator.validate(this, filePath);
+        return result;
     }
 }
