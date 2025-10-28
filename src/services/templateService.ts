@@ -50,9 +50,11 @@ export async function getTemplatesForAdr(){
 export async function saveTemplate(nome: string, conteudo: string): Promise<boolean> {
     const prisma = Database.getInstance().getPrismaClient();
     const validator = new TemplateValidator();
-    const { valido, campos, regras } = await validator.validate(nome, conteudo);
+    const { valido, erros, campos, regras } = await validator.validate(nome, conteudo);
 
-    if(!valido){
+    if (!valido) {
+        const mensagens = erros.map(e => `• ${e.mensagem}`).join('\n');
+        vscode.window.showErrorMessage(`Erros no template "${nome}":\n${mensagens}`);
         return false;
     }
 
@@ -131,6 +133,7 @@ export async function deleteTemplateByFileName(fileName: string): Promise<void> 
     }
 
     const repository = await getTemplateRepository();
+    const prisma = Database.getInstance().getPrismaClient();
     const adrs = await getAdrs();
 
     try {
@@ -146,7 +149,14 @@ export async function deleteTemplateByFileName(fileName: string): Promise<void> 
                 continue;
             }
             
-            await repository.deleteById(id);
+            await prisma.$transaction(async (tx) => {
+                const fieldId = template.getField().getId();
+                const ruleId = template.getField().getRule().getId();
+
+                await tx.template.delete({ where: { id } });
+                await tx.field.delete({ where: { id: fieldId } });
+                await tx.rule.delete({ where: { id: ruleId } });
+            });
         }
 
         const msg = templatesToDelete.length > 1
@@ -184,10 +194,11 @@ export async function atualizaTemplateByFileName(fileName: string){
     try {
         const conteudo = (await vscode.workspace.fs.readFile(filePath)).toString();
         const validator = new TemplateValidator();
-        const { valido, campos, regras } = await validator.validate(`${nome}.md`, conteudo);
+        const { valido, erros, campos, regras } = await validator.validate(`${nome}.md`, conteudo);
 
-        if(!valido){
-            vscode.window.showErrorMessage(`Template "${nome}" inválido. Atualização cancelada.`);
+        if (!valido) {
+            const mensagens = erros.map(e => `• ${e.mensagem}`).join('\n');
+            vscode.window.showErrorMessage(`Template "${nome}" inválido:\n${mensagens}`);
             return;
         }
 

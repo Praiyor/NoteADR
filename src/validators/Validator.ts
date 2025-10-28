@@ -6,7 +6,7 @@ type FieldRule = {
   regra: any;
 }
 
-export abstract class Validator<T>{
+export abstract class Validator<T, R = boolean>{
   protected rules: FieldRule[] = [];
   protected conteudo: string = "";
   protected arquivo: string = "";
@@ -28,7 +28,7 @@ export abstract class Validator<T>{
 
   protected abstract getValues(): void;
 
-  protected abstract checkRules(valor: string, regra: any): boolean;
+  protected abstract checkRules(valor: string, regra: any): R;
 
   protected async loadFile(filePath: string): Promise<void> {
     this.arquivo = filePath;
