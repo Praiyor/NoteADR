@@ -100,6 +100,10 @@ export class AppView {
                     }
                     case 'get-categoria-list': {
                         const adrId = data.adrId;
+                        const adr = await getAdrById(adrId);
+                        if(!adr){
+                            return;
+                        }
                         const {categorias, adrCategorias} = await getCategorias(adrId);
 
                         this.webViewPanel.webview.postMessage({
@@ -107,7 +111,8 @@ export class AppView {
                             data: {
                                 categorias,
                                 adrCategorias,
-                                adrId
+                                adrId,
+                                adrNome: adr.getNome()
                             }
                         });
                         break;
@@ -131,7 +136,8 @@ export class AppView {
                             data: {
                                 categorias,
                                 adrCategorias,
-                                adrId
+                                adrId,
+                                adrNome: adr.getNome()
                             }
                         });
                         break;

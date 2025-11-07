@@ -1,8 +1,4 @@
-# Decision record template by Michael Nygard
-
-In each ADR file, write these sections:
-
-# Title { "wordCount": { "min": 1, "max": 70 }, "noSpecialChars": true }
+# Title { "wordCount": { "min": 1, "max": 70 } }
 
 ## Status { "enum": ["proposed", "accepted", "rejected", "deprecated", "superseded"] }
 
@@ -12,7 +8,7 @@ What is the status, such as proposed, accepted, rejected, deprecated, superseded
 
 What is the issue that we're seeing that is motivating this decision or change?
 
-## Decision { "wordCount": { "min": 5, "max": 1000 }, "contains": ["will", "decide"] }
+## Decision { "wordCount": { "min": 5, "max": 1000 } }
 
 What is the change that we're proposing and/or doing?
 

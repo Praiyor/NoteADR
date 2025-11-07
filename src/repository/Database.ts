@@ -55,10 +55,10 @@ export class Database {
     const campos = ["Title", "Status", "Context", "Decision", "Consequences"];
 
     const regras = [
-    { wordCount: { min: 1, max: 70 }, noSpecialChars: true },
+    { wordCount: { min: 1, max: 70 } },
     { enum: ["proposed", "accepted", "rejected", "deprecated", "superseded"] },
     { wordCount: { min: 5, max: 1000 }, notContains: ["lorem", "ipsum"] },
-    { wordCount: { min: 5, max: 1000 }, contains: ["will", "decide"] },
+    { wordCount: { min: 5, max: 1000 } },
     { wordCount: { min: 5, max: 1000 } }
   ];
       const rule = await this.prisma.rule.create({

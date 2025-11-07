@@ -19,17 +19,20 @@
       {
         "command": "noteadr.iniciarNoteAdr",
         "name": "NoteADR",
-        "title": "Iniciar noteADR"
+        "title": "Iniciar noteADR",
+        "category": "noteADR"
       },
       {
         "command": "noteadr.abrirMainView",
         "name": "NoteADR",
-        "title": "Abrir noteADR"
+        "title": "Abrir noteADR",
+        "category": "noteADR"
       },
       {
         "command": "noteadr.abrirCriarADRView",
         "name": "NoteADR",
-        "title": "Criar novo ADR"
+        "title": "Criar novo ADR",
+        "category": "noteADR"
       }
     ]
   },

@@ -6,9 +6,10 @@ import { Database } from '../repository/Database';
 export async function inicializarNodeAdr(context: vscode.ExtensionContext): Promise<void>{
     const root = getWorkspaceRootPath();
 
-    if(!root){
+    if(root === undefined){
         return;
     }
+
 
     const adrDiretorio = vscode.Uri.joinPath(root.uri, getAdrDiretorio());
     const templateDiretorio = vscode.Uri.joinPath(root.uri, getTemplateDiretorio());

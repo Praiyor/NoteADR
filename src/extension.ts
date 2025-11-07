@@ -10,11 +10,9 @@ import { atualizaTemplateByFileName, deleteTemplateByFileName } from './services
 export function activate(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(
-		vscode.commands.registerCommand('noteadr.iniciarNoteAdr', () => {
+		vscode.commands.registerCommand('noteadr.iniciarNoteAdr', async() => {
 
-			vscode.window.showInformationMessage('noteADR iniciado!');
-
-			inicializarNodeAdr(context);
+			await inicializarNodeAdr(context);
 
 		})
 	);

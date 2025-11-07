@@ -4,6 +4,7 @@
     const adrIdInput = document.querySelector('#adr-id');
     const categoriaList = document.querySelector('#categoria-list');
     const backBtn = document.querySelector('#btn-back');
+    const adrNameElement = document.querySelector('#adr-name');
     let allCategorias = [];
     let adrCategorias = [];
     let selectedAdrId = null;
@@ -20,6 +21,10 @@
                 allCategorias = data.categorias;
                 adrCategorias = data.adrCategorias;
                 selectedAdrId = data.adrId;
+                console.log(data);
+                if (data.adrNome) {
+                    adrNameElement.textContent = data.adrNome;
+                }
                 renderCategoriaList(allCategorias, adrCategorias);
                 break;
         }
