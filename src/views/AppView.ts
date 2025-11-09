@@ -45,6 +45,8 @@ export class AppView {
             }
         );
 
+        view.iconPath = vscode.Uri.joinPath(extensionUri, 'resources', 'adrnLogo.png');
+
         AppView.currentWebView = new AppView(view, extensionUri, page);
     }
 

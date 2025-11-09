@@ -3,7 +3,7 @@ import * as vscode from 'vscode';
 import { AppView } from './views/AppView';
 import { getAdrDiretorio, getTemplateDiretorio, inicializarNodeAdr } from './services/inicializarService';
 import { getWorkspaceRootPath, validateAdrIds } from './Utils/utils';
-import { deleteAdr, getAdrById, getAdrRepository, getAdrToValidate } from './services/adrService';
+import { deleteAdr, getAdrById, getAdrRepository, getAdrToValidate, validateAdrService } from './services/adrService';
 import { atualizaTemplateByFileName, deleteTemplateByFileName } from './services/templateService';
 
 
@@ -48,30 +48,11 @@ export function activate(context: vscode.ExtensionContext) {
 	
 	context.subscriptions.push(
 		vscode.commands.registerCommand('noteadr.validateAdr', async (filePath: string) => {
-			if (filePath) {
-				const adr = await getAdrToValidate(filePath);
-				if(!adr){
-					return;
-				}
-
-				const result = await adr.validaAdr(filePath);
-				const repository = getAdrRepository();
-
-				if(adr.getValido() !== result.valido){
-					(await repository).updateById(adr.getId(), {valido: result.valido});
-					adr.setValido(result.valido);
-				}
-
-				if(result.valido){
-					vscode.window.showInformationMessage(`ADR ${adr?.getId()} - ${adr?.getNome()} está válido}`);
-				} else{
-					const mensagens = result.erros.map(e => `• ${e.mensagem}`).join("\n");
-  					vscode.window.showErrorMessage(`ADR ${adr.getId()} inválido:\n${mensagens}`);
-				}
-			} 
-			else {
+			if (!filePath) {
 				vscode.window.showInformationMessage('Nenhum arquivo ADR fornecido para validação.');
+				return;
 			}
+			await validateAdrService(filePath);
 		})
 	);
 

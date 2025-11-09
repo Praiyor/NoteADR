@@ -229,6 +229,40 @@ export async function deleteAdr(adr: Adr): Promise<void> {
     }
 }
 
+export async function validateAdrService(filePath: string) {
+	try {
+		const adr = await getAdrToValidate(filePath);
+		if (!adr) {
+            return;
+        }
+
+		const result = await adr.validaAdr(filePath);
+		const repository = await getAdrRepository();
+
+		if (adr.getValido() !== result.valido) {
+			await repository.updateById(adr.getId(), { valido: result.valido });
+			adr.setValido(result.valido);
+		}
+
+		if (result.valido) {
+			vscode.window.showInformationMessage(
+				`ADR ${adr.getId()} - ${adr.getNome()} está válido.`
+			);
+		} else {
+			const mensagens = result.erros.map(e => `• ${e.mensagem}`).join("\n");
+			vscode.window.showErrorMessage(
+				`ADR ${adr.getId()} inválido:\n${mensagens}`
+			);
+		}
+
+		return result;
+	} catch (error) {
+		vscode.window.showErrorMessage(`Erro ao validar ADR.`);
+		console.error(error);
+		return undefined;
+	}
+}
+
 export async function getAdrRepository(){
     return new adrRepository();
 }
