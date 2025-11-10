@@ -1,7 +1,7 @@
 
 import * as vscode from 'vscode';
 import { AppView } from './views/AppView';
-import { getAdrDiretorio, getTemplateDiretorio, inicializarNodeAdr } from './services/inicializarService';
+import { getAdrDiretorio, getTemplateDiretorio, inicializarNodeAdr, isExtensionReady } from './services/inicializarService';
 import { getWorkspaceRootPath, validateAdrIds } from './Utils/utils';
 import { deleteAdr, getAdrById, getAdrRepository, getAdrToValidate, validateAdrService } from './services/adrService';
 import { atualizaTemplateByFileName, deleteTemplateByFileName } from './services/templateService';
@@ -19,6 +19,13 @@ export function activate(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(
 		vscode.commands.registerCommand('noteadr.abrirMainView', async () => {
+			const ready = await isExtensionReady();
+        	if (!ready) {
+        	    vscode.window.showWarningMessage(
+        	        "A extensão noteADR ainda não está iniciada. Execute o comando 'noteadr.inicializar' antes de abrir a tela principal."
+        	    );
+        	    return;
+        	}
 			await validateAdrIds();
 			AppView.getInstance(context.extensionUri, "main");
 		})

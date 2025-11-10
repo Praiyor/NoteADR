@@ -45,6 +45,26 @@ async function createTemplate(context: vscode.ExtensionContext, uri:vscode.Uri){
     await vscode.workspace.fs.writeFile(destination, template);
 }
 
+export async function isExtensionReady(): Promise<boolean> {
+    const root = getWorkspaceRootPath();
+    if (!root) {
+        return false;
+    }
+
+    const adrDiretorio = vscode.Uri.joinPath(root.uri, getAdrDiretorio());
+    const templateDiretorio = vscode.Uri.joinPath(root.uri, getTemplateDiretorio());
+
+    const db = Database.getInstance();
+    const dbDir = db.getDatabaseConfig();
+    const dbFile = vscode.Uri.joinPath(root.uri, dbDir, "extension.db");
+
+    const adrExiste = await existeDiretorio(adrDiretorio);
+    const templateExiste = await existeDiretorio(templateDiretorio);
+    const dbExiste = await existeArquivo(dbFile);
+
+    return adrExiste && templateExiste && dbExiste;
+}
+
 export function getAdrDiretorio(): string {
     return vscode.workspace.getConfiguration().get('noteadr.adrDiretorio') ?? 'docs/adr';
 }
