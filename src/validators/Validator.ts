@@ -15,7 +15,7 @@ export abstract class Validator<T, R = boolean>{
 
   constructor(){}
 
-  public static getInstance<T, U extends Validator<T>>(this: new () => U): U {
+  public static getInstance<T, U extends Validator<any, any>>(this: new () => U): U {
     if (!Validator.instances.has(this)) {
       Validator.instances.set(this, new this());
     }

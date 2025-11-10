@@ -5,7 +5,7 @@ import { Database } from "../repository/Database";
 import { templateRepository } from "../repository/templateRepository";
 import { TemplateMapper } from "../Utils/templateMapper";
 import { getWorkspaceRootPath } from "../Utils/utils";
-import { TemplateValidator } from "../validators/TemplateValidator";
+import { TemplateValidator } from '../validators/TemplateValidator';
 import { getAdrs } from "./adrService";
 import { createField, updateFieldById} from "./fieldService";
 import { existeDiretorio, getTemplateDiretorio } from "./inicializarService";
@@ -49,7 +49,7 @@ export async function getTemplatesForAdr(){
 
 export async function saveTemplate(nome: string, conteudo: string): Promise<boolean> {
     const prisma = Database.getInstance().getPrismaClient();
-    const validator = new TemplateValidator();
+    const validator = TemplateValidator.getInstance();
     const { valido, erros, campos, regras } = await validator.validate(nome, conteudo);
 
     if (!valido) {
