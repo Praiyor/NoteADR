@@ -77,7 +77,8 @@ O **Note ADR** possibilita a **importação de templates personalizados** criado
 ## Decision { "wordCount": { "min": 5, "max": 1000 } }
 
 
-## Consequences { "wordCount": { "min": 5, "max": 1000 } }```
+## Consequences { "wordCount": { "min": 5, "max": 1000 } }
+```
 
 
 Cada campo pode conter **regras de validação** definidas em formato JSON.  
