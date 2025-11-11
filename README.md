@@ -1,71 +1,122 @@
-# noteadr README
+# NoteADR — Architecture Decision Records para o VS Code
 
-This is the README for your extension "noteadr". After writing up a brief description, we recommend including the following sections.
+Extensão para o **Visual Studio Code (VS Code)** desenvolvida para auxiliar na **criação, gerenciamento e validação de Architecture Decision Records (ADRs)**.
 
-## Features
+Esta extensão foi desenvolvida como parte de um Trabalho de Conclusão de Curso (TCC) de **Igor dos Santos Meurer**.
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+## Workspace
 
-For example if there is an image subfolder under your extension project workspace:
+A extensão **Note ADR** opera em nível de **workspace**, sendo necessário abrir uma pasta como raiz no VS Code para utilizá-la corretamente.  
+Todos os dados e arquivos gerados são organizados dentro deste diretório.
 
-\!\[feature X\]\(images/feature-x.png\)
+## Recursos
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+O **Note ADR** oferece um conjunto de funcionalidades que simplificam a utilização de ADRs, incluindo:
 
-## Requirements
+- Criação de ADRs por meio de uma **interface gráfica**;
+- **Adição e gerenciamento de categorias** associadas aos ADRs;
+- **Validação automática** dos documentos conforme regras predefinidas;
+- **Importação de templates personalizados**;
+- **Relações de substituição** entre ADRs (marcando decisões obsoletas).
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+## Comandos
 
-## Extension Settings
+A extensão disponibiliza os seguintes comandos: 
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+### `noteadr.iniciarNoteAdr`
+Inicializa o ambiente de trabalho do **Note ADR**, criando automaticamente os diretórios necessários (`docs/adr` e `docs/template`) e o banco de dados **SQLite** utilizado pela extensão.  
+Um **template base** é gerado para uso inicial.
 
-For example:
+### `noteadr.abrirMainView`
+Abre a **interface principal** da extensão, permitindo:
 
-This extension contributes the following settings:
+- Visualizar todos os ADRs criados;
+- Abrir ADRs para leitura ou edição;
+- Acessar funções de gerenciamento e substituição;
+- Importar templates personalizados.
 
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
+### `noteadr.abrirCriarADRView`
+Abre a interface para **criação de um novo ADR** escolhendo entre os templates disponíveis.
 
-## Known Issues
+## Menus
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+A extensão adiciona os seguintes menus
 
-## Release Notes
+- **Abrir NoteADR** — abre a interface principal de gerenciamento;
+- **Criar Novo ADR** — abre o formulário de criação de ADR;
+- **Gerenciamento de categorias** - abre a interface para adicionar ou remover categorias associadas;
+- **Substituir ADR** - permite indicar que um ADR foi substituído por outro.
 
-Users appreciate release notes as you update your extension.
+## Validação de ADRs
 
-### 1.0.0
+O **Note ADR** executa a **validação automática** sempre que um ADR é alterado, assegurando que o documento siga o modelo definido.  
+A validação verifica se todos os **campos obrigatórios** estão presentes e devidamente preenchidos, conforme as regras do template associado. 
 
-Initial release of ...
+## Categorias
 
-### 1.0.1
+A extensão permite **gerenciar categorias** armazenadas no banco de dados e associá-las aos ADRs, facilitando sua **organização e filtragem** no painel principal.     
 
-Fixed issue #.
+## Substituir ADR
 
-### 1.1.0
+É possível marcar um ADR como **substituído** por outro.  
+Quando essa relação é estabelecida, o ADR substituído é destacado visualmente e o ADR substituto é exibido logo abaixo, indicando a continuidade da decisão arquitetural.
 
-Added features X, Y, and Z.
+## Importar templates
 
----
+O **Note ADR** possibilita a **importação de templates personalizados** criados pelo usuário, desde que estejam em formato **Markdown** e sigam a estrutura básica esperada, conforme o exemplo a seguir:
 
-## Following extension guidelines
+```markdown
+# Title { "wordCount": { "min": 1, "max": 70 } }
 
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
+## Status { "enum": ["proposed", "accepted", "rejected", "deprecated", "superseded"] }
 
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
 
-## Working with Markdown
+## Context { "wordCount": { "min": 5, "max": 1000 }, "notContains": ["lorem", "ipsum"] }
 
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
 
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
+## Decision { "wordCount": { "min": 5, "max": 1000 } }
 
-## For more information
 
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
+## Consequences { "wordCount": { "min": 5, "max": 1000 } }```
 
-**Enjoy!**
+
+Cada campo pode conter **regras de validação** definidas em formato JSON.  
+Essas regras orientam a validação automática do ADR, garantindo que os documentos sigam um padrão consistente.
+
+### Regras aceitas pelo Note ADR
+
+A seguir estão listadas todas as regras atualmente reconhecidas pela extensão:
+
+| Regra | Tipo de Valor | Descrição |
+|-------|----------------|------------|
+| `wordCount` | Objeto `{ "min": number, "max": number }` | Define o número mínimo e máximo de palavras permitido em um campo. |
+| `enum` | Lista de strings | Limita os valores possíveis do campo a uma lista específica. |
+| `contains` | String ou lista de strings | Exige que o campo contenha determinadas palavras ou expressões. |
+| `notContains` | String ou lista de strings | Garante que o campo **não contenha** certas palavras ou expressões. |
+| `noSpecialChars` | Boolean (`true`/`false`) | Impede o uso de caracteres especiais no campo. |
+| `date` | Boolean (`true`/`false`) | Indica que o campo deve conter uma data. |
+
+Um template é considerado **válido** apenas se possuir ao menos um campo com regras definidas.  
+
+Os templates importados podem ser utilizados como base para a criação de novos ADRs.
+
+## Banco de Dados
+
+A extensão utiliza **SQLite**, integrado via **Prisma ORM**, para armazenar informações como:
+
+- Metadados dos ADRs (status, categorias, validade);
+- Estrutura e conteúdo dos templates;
+- Relações entre ADRs substituídos.
+
+O banco é criado automaticamente no diretório configurado (por padrão, `docs/`).
+
+## Problemas Conhecidos
+
+- A extensão ainda está em **versão inicial**;  
+- Pode haver falhas ocasionais na atualização automática da lista de ADRs após edições externas;  
+- Ainda **não há suporte para múltiplos workspaces** simultâneos.
+
+## Autor
+
+**Igor dos Santos Meurer**  
+Desenvolvido como parte do Trabalho de Conclusão de Curso — 2025.

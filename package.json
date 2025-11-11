@@ -1,6 +1,7 @@
 {
   "name": "noteadr",
-  "displayName": "noteADR",
+  "displayName": "note ADR",
+  "publisher": "IgordosSantosMeurer",
   "description": "",
   "version": "0.0.1",
   "engines": {
