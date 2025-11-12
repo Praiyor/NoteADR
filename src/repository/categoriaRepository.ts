@@ -1,6 +1,6 @@
-import { categoria, Prisma } from "@prisma/client";
 import { Database } from "./Database";
 import { Categoria } from '../entities/Categoria';
+import { categoria } from "../../prisma/client";
 
 type categoriaDTO = {
     id?: number,

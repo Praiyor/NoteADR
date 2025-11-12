@@ -1,4 +1,5 @@
-import { Prisma } from "@prisma/client";
+
+import { Prisma } from "../../prisma/client";
 import { ruleRepository } from "../repository/ruleRepository";
 
 export async function createRule(regras: any, tx: Prisma.TransactionClient) {

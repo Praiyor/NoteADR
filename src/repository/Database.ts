@@ -1,9 +1,9 @@
 import * as vscode from "vscode";
-import { PrismaClient } from "@prisma/client";
 import { getWorkspaceRootPath } from "../Utils/utils";
 import path from "path";
 import { exec as execCb } from "child_process";
 import { promisify } from "util";
+import { PrismaClient } from '../../prisma/client/index';
 
 const exec = promisify(execCb);
 

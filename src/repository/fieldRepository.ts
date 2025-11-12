@@ -1,4 +1,5 @@
-import { field, Prisma } from "@prisma/client";
+
+import { field, Prisma } from "../../prisma/client";
 import { Database } from "./Database";
 
 type fieldDTO = {

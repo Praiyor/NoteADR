@@ -1,4 +1,4 @@
-import { Prisma, template } from "@prisma/client";
+import { Prisma, template } from "../../prisma/client";
 import { Database } from "./Database";
 
 type TemplateDTO = {

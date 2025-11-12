@@ -9,3 +9,8 @@ vsc-extension-quickstart.md
 **/*.map
 **/*.ts
 **/.vscode-test.*
+.env
+
+!node_modules/@prisma/client/
+!prisma/schema.prisma
+!prisma/migrations/

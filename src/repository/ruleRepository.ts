@@ -1,4 +1,4 @@
-import { Prisma, rule } from "@prisma/client";
+import { Prisma, rule } from "../../prisma/client";
 import { Database } from "./Database";
 
 type ruleDTO = {

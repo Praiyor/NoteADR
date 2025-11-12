@@ -2,7 +2,7 @@
 
 Extensão para o **Visual Studio Code (VS Code)** desenvolvida para auxiliar na **criação, gerenciamento e validação de Architecture Decision Records (ADRs)**.
 
-Esta extensão foi desenvolvida como parte de um Trabalho de Conclusão de Curso (TCC) de **Igor dos Santos Meurer**.
+Esta extensão foi desenvolvida como parte de um Trabalho de Conclusão de Curso (TCC) de **Igor dos Santos Meurer — UDESC/CEAVI (2025)**
 
 ## Workspace
 
@@ -121,3 +121,4 @@ O banco é criado automaticamente no diretório configurado (por padrão, `docs/
 
 **Igor dos Santos Meurer**  
 Desenvolvido como parte do Trabalho de Conclusão de Curso — 2025.
+**Universidade do Estado de Santa Catarina (UDESC) — Centro de Educação Superior do Alto Vale do Itajaí (CEAVI)**

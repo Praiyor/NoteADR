@@ -1,4 +1,4 @@
-import { Prisma, adr } from '@prisma/client';
+
 import * as vscode from 'vscode';
 import { getAdrDiretorio } from '../services/inicializarService';
 

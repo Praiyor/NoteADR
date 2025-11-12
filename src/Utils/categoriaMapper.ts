@@ -1,4 +1,5 @@
-import { categoria } from "@prisma/client";
+
+import { categoria } from "../../prisma/client";
 import { Categoria } from "../entities/Categoria";
 
 export class CategoriaMapper {

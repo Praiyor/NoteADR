@@ -1,4 +1,5 @@
-import { Prisma } from "@prisma/client";
+
+import { Prisma } from "../../prisma/client";
 import { fieldRepository } from "../repository/fieldRepository";
 
 export async function createField(fields: any, tx: Prisma.TransactionClient) {

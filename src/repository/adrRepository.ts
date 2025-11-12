@@ -1,4 +1,5 @@
-import { adr, Prisma } from "@prisma/client";
+
+import { adr, Prisma } from "../../prisma/client";
 import { Database } from "./Database";
 
 type adrDTO = {
